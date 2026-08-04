@@ -10,7 +10,19 @@ Amaç yalnızca hata mesajını saklamak değil; hatanın nedenini ve tekrar ya�
 
 ### Hata mesajı
 
-```text
-Permission to thebilici/go-cloud-native-learning.git denied to fatihbilig
-fatal: unable to access 'https://github.com/thebilici/go-cloud-native-learning.git/':
-The requested URL returned error: 403
+
+## Yanlış cevaplanan soru 1 — `git commit` ile `git push` farkı
+
+### Soru
+
+`git commit` ile `git push` arasındaki fark nedir?
+
+### Verdiğim yanlış veya eksik cevap
+
+`git add` ile değişiklikleri staging area'ya alıyoruz, `git commit` ile bunu bildiriyoruz, `git push` ile remote GitHub'a bağlıyoruz.
+
+### Neden hatalıydı?
+
+`git commit` yalnızca yapılan değişikliği bildirmez.
+
+Commit işlemi, staging area'da bulunan değişiklikleri yerel Git repository'sinin geçmişine kaydeder.
