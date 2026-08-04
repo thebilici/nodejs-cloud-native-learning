@@ -21,3 +21,7 @@ Bu proje; Go, Docker, Docker Compose, Kubernetes, Metrics Server, HPA ve k6 tekn
 ## Durum
 
 Proje başlangıç aşamasındadır.
+
+## Repository
+
+GitHub: https://github.com/thebilici/go-cloud-native-learning
