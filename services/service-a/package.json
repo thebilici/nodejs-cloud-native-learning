@@ -1,0 +1,32 @@
+{
+  "name": "service-a",
+  "version": "1.0.0",
+  "description": "Simple Node.js service for Docker, Kubernetes, HPA and k6 learning",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "test": "echo \"Tests are not configured yet\""
+  },
+  "keywords": [
+    "nodejs",
+    "typescript",
+    "express",
+    "docker",
+    "kubernetes",
+    "k6"
+  ],
+  "author": "Fatih Bilici",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.1.2",
+    "tsx": "^4.23.5",
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1"
+  }
+}

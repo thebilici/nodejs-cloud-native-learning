@@ -1,19 +1,21 @@
 # Learning Path
 
-Bu dosya, Go servislerinden Kubernetes autoscaling aşamasına kadar izlenecek ana öğrenme yolunu tanımlar.
+Bu dosya, Node.js servislerinden Kubernetes autoscaling aşamasına kadar izlenecek ana öğrenme yolunu tanımlar.
 
 ## Temel yaklaşım
 
-Konular uzun ve bağımsız teorik dersler halinde değil, projede ihtiyaç duyuldukça öğrenilecektir.
+Konular uzun teorik dersler şeklinde değil, proje geliştirilirken ihtiyaç duyuldukça öğrenilecektir.
 
 Her aşamada:
 
 1. Kavramın ne olduğu öğrenilir.
 2. Hangi problemi çözdüğü açıklanır.
 3. Küçük bir uygulama yapılır.
-4. Komut ve çıktılarla doğrulanır.
-5. Hatalar kaydedilir.
+4. Komutlar ve çıktılar doğrulanır.
+5. Karşılaşılan hatalar kaydedilir.
 6. Review soruları cevaplanır.
+
+---
 
 ## Öğrenme yolu
 
@@ -23,34 +25,47 @@ Her aşamada:
 - Git repository oluşturma
 - `.gitignore`
 - README ve öğrenme dokümanları
-- Küçük ve mantıksal commitler
+- Küçük ve mantıksal commit'ler
 
-### 2. Go temelleri ve Service A
+---
 
-- Go module
-- Package yapısı
-- `main` fonksiyonu
-- Config yönetimi
-- HTTP handler
+### 2. Node.js ve Service A
+
+- Node.js proje yapısı
+- `package.json`
+- TypeScript kurulumu
+- `tsconfig.json`
+- Express kurulumu
+- Environment Variable yönetimi
+- Express uygulaması
+- Route yapısı
+- Handler (Controller) yapısı
+- Middleware mantığı
 - JSON response
 - Query parametreleri
 - Kontrollü CPU workload
-- HTTP server timeout ayarları
+- HTTP server yapılandırması
 - Graceful shutdown
 
-### 3. Go testleri
+---
 
-- `testing` paketi
-- `httptest`
-- Table-driven test
+### 3. Testler
+
+- Jest
+- Supertest
+- Unit Test
+- Integration Test
 - Test coverage
-- Race detector
+
+---
 
 ### 4. Service B
 
-- Service A ile aynı mimarinin uygulanması
-- Servislerin bağımsız çalıştırılması
-- Ortak ve farklı sorumlulukların değerlendirilmesi
+- Service A mimarisinin tekrar uygulanması
+- İki servisin bağımsız çalıştırılması
+- Servisler arası sorumlulukların değerlendirilmesi
+
+---
 
 ### 5. Docker
 
@@ -62,77 +77,124 @@ Her aşamada:
 - Küçük final image
 - Non-root kullanıcı
 - Port mapping
+- Environment variable kullanımı
+
+---
 
 ### 6. Docker Compose
 
 - İki servisi birlikte çalıştırma
-- Compose ağı
-- Service isimleriyle DNS çözümleme
+- Compose network
+- Service isimleriyle haberleşme
 - Healthcheck
-- Log ve container yönetimi
+- Container yönetimi
+- Log yönetimi
+
+---
 
 ### 7. k6 yük testleri
 
-- Smoke test
-- İki servis testi
-- Stres testi
-- VU ve iteration
-- Check ve threshold
-- Response time metrikleri
+- Smoke Test
+- Load Test
+- Stress Test
+- Spike Test
+- VU ve Iteration
+- Check
+- Threshold
+- Response Time metrikleri
+
+---
 
 ### 8. Kubernetes
 
 - Namespace
 - Deployment
+- ReplicaSet
 - Pod
-- Replica
 - Service
-- Label ve selector
-- Resource request ve limit
-- Health probe
-- Port-forward
+- Label ve Selector
+- Resource Request
+- Resource Limit
+- Health Probe
+- Port Forward
+
+---
 
 ### 9. Metrics Server
 
-- CPU ve bellek metrikleri
+- CPU metrikleri
+- Bellek metrikleri
 - `kubectl top`
 - Metrics API
-- Kubernetes metriklerinin doğrulanması
+- Kaynak kullanımının doğrulanması
+
+---
 
 ### 10. HPA
 
 - Horizontal Pod Autoscaler
-- CPU utilization
+- CPU Utilization
 - Replica artırma
 - Replica azaltma
-- Metrics Server ve HPA ilişkisi
+- Metrics Server ile çalışma mantığı
+
+---
 
 ### 11. Kubernetes üzerinde yük testi
 
 - k6 ile `/work` endpoint'ine yük gönderme
 - CPU kullanımını gözlemleme
-- Scale-up sürecini izleme
-- Scale-down sürecini izleme
+- Scale Up sürecini izleme
+- Scale Down sürecini izleme
+- HPA davranışını analiz etme
 
-### 12. Genel review
+---
 
-- Mimariyi baştan sona açıklama
-- Komutları doğru klasörde çalıştırma
-- Hata senaryoları
-- Mini sınav
-- Projenin kendi cümleleriyle anlatılması
+### 12. Genel Review
+
+- Proje mimarisini baştan sona anlatabilme
+- Kullanılan komutları açıklayabilme
+- Docker ve Kubernetes akışını açıklayabilme
+- Hata senaryolarını çözebilme
+- Mini teknik mülakat
+- Projeyi kendi cümleleriyle anlatabilme
+
+---
 
 ## Ana veri akışı
 
 ```text
-Go kaynak kodu
-→ Go binary
-→ Docker image
-→ Container
-→ Kubernetes Pod
-→ Kubernetes Service
-→ k6 yükü
-→ CPU metriği
-→ Metrics Server
-→ HPA
-→ Yeni Pod'lar
+TypeScript kaynak kodu
+        │
+        ▼
+Node.js Uygulaması
+        │
+        ▼
+Docker Image
+        │
+        ▼
+Docker Container
+        │
+        ▼
+Kubernetes Deployment
+        │
+        ▼
+Pod
+        │
+        ▼
+Service
+        │
+        ▼
+k6 Yük Testi
+        │
+        ▼
+CPU Kullanımı
+        │
+        ▼
+Metrics Server
+        │
+        ▼
+Horizontal Pod Autoscaler (HPA)
+        │
+        ▼
+Yeni Pod'lar
