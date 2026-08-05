@@ -1,28 +1,12 @@
 import dotenv from "dotenv";
-import express, { Request, Response } from "express";
+import app from "./app.js";
 
-const app = express();
 dotenv.config();
 
 const PORT = Number(process.env.PORT) || 3000;
 const SERVICE_NAME = process.env.SERVICE_NAME || "service-a";
-const APP_VERSION = process.env.APP_VERSION || "1.0.0";
-
-app.get("/health", (_req: Request, res: Response) => {
-  res.status(200).json({
-    status: "healthy",
-    service: SERVICE_NAME,
-    version: APP_VERSION,
-    message: `${SERVICE_NAME} is running`,
-  });
-});
-
 
 app.listen(PORT, () => {
   console.log(`${SERVICE_NAME} is running on port ${PORT}`);
 });
-
-
-
-
 
