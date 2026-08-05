@@ -66,3 +66,106 @@ Sorulara önce kendi cümlelerimle cevap vermeliyim. Cevabı hatırlayamazsam il
 6. `git push -u origin main` komutundaki `-u` parametresi ne yapar?
 7. Yerel `main` branch'inin `origin/main` branch'ini takip etmesi ne anlama gelir?
 
+---
+
+## Node.js ve Express
+
+### Mimari
+
+1. `app.ts` ile `server.ts` arasındaki fark nedir?
+
+2. Neden `app.listen()` çağrısını `server.ts` içinde tutuyoruz?
+
+3. Tek sorumluluk (Single Responsibility) prensibini bu projede nasıl uyguladık?
+
+4. Separation of Concerns nedir?
+
+5. Route ile Handler arasındaki fark nedir?
+
+6. Handler neden ayrı dosyalarda tutulur?
+
+7. Workload katmanının görevi nedir?
+
+8. Neden CPU workload kodunu doğrudan `work.handler.ts` içine yazmadık?
+
+9. Yeni bir endpoint eklerken hangi dosyalar değişir?
+
+10. Neden `app.ts` ve `server.ts` çoğu endpoint eklenirken değişmez?
+
+---
+
+### Express
+
+1. `express()` ne oluşturur?
+
+2. `express.Router()` ne işe yarar?
+
+3. `app.use(router)` ne yapar?
+
+4. `app.use("/api", router)` kullanılırsa endpoint'ler nasıl değişir?
+
+5. Neden `healthHandler()` yerine `healthHandler` yazıyoruz?
+
+6. `Request` ve `Response` tiplerini neden kullanıyoruz?
+
+7. Handler içinde `_req` yazılmasının sebebi nedir?
+
+---
+
+### Environment Variables
+
+1. Environment Variable nedir?
+
+2. Neden `.env` dosyası kullanıyoruz?
+
+3. `dotenv.config()` ne yapar?
+
+4. Neden `process.env.PORT` değerini `Number()` ile dönüştürüyoruz?
+
+5. `process.env.SERVICE_NAME || "service-a"` ifadesi ne yapar?
+
+---
+
+### Endpointler
+
+1. `/health` endpoint'inin amacı nedir?
+
+2. `/hello` endpoint'inin amacı nedir?
+
+3. `/work` endpoint'inin amacı nedir?
+
+---
+
+### Workload
+
+1. Busy loop nedir?
+
+2. CPU ağırlıklı işlem Node.js event loop'unu nasıl etkiler?
+
+3. `runCpuWork()` fonksiyonunun görevi nedir?
+
+4. Neden workload katmanını HTTP katmanından ayırdık?
+
+---
+
+### Git Çalışma Disiplini
+
+1. Neden `git add .` yerine belirli dosyaları stage etmeye başladık?
+
+2. `git diff --staged` hangi amaçla kullanılır?
+
+3. Commit atmadan önce hangi kontrolleri yapıyoruz?
+
+4. Conventional Commit nedir?
+
+5. `feat`, `refactor`, `docs`, `fix` ve `chore` commit tipleri hangi durumlarda kullanılır?
+
+---
+
+### Karşılaşılan Problemler
+
+1. `Cannot GET /health` hatası neyi ifade eder?
+
+2. Böyle bir hata aldığında ilk hangi kontrolleri yaparsın?
+
+3. `app.ts` ile `server.ts` ayrımında yaşadığımız problemi nasıl çözdük?

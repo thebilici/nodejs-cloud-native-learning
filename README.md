@@ -1,23 +1,26 @@
 # Node.js Cloud Native Learning
 
-Bu proje; Node.js, TypeScript, Express, Docker, Docker Compose, Kubernetes, Metrics Server, HPA ve k6 teknolojilerini iki basit HTTP servisi üzerinden öğrenmek amacıyla geliştirilmektedir.
+Bu repository, gerçek bir şirket projesi geliştiriyormuş gibi ilerleyerek **Node.js tabanlı Cloud Native Backend Development** öğrenmek amacıyla oluşturulmuştur.
 
-## Projenin amacı
+Projenin amacı yalnızca çalışan bir uygulama geliştirmek değildir.
 
-- Node.js, TypeScript ve Express ile iki bağımsız HTTP servisi geliştirmek
-- Servisleri düzenli ve test edilebilir bir klasör yapısıyla oluşturmak
-- Environment variable kullanımını öğrenmek
-- Servisleri Docker image hâline getirmek
-- Docker Compose ile birlikte çalıştırmak
-- k6 ile yük ve stres testi yapmak
-- Kubernetes üzerinde deploy etmek
-- Kubernetes Service ile Pod'lara erişmek
-- Metrics Server ile CPU ve bellek kullanımını gözlemlemek
-- HPA ile yük arttığında Pod sayısının otomatik artmasını incelemek
-- Yük azaldığında Pod sayısının tekrar düşmesini gözlemlemek
+Asıl hedef;
 
-## Kullanılan teknolojiler
+- Git ve GitHub çalışma disiplini kazanmak
+- Node.js ve TypeScript ile servis geliştirmek
+- Docker ve Kubernetes ekosistemini öğrenmek
+- Load Testing yapmak
+- Autoscaling mantığını anlamak
+- Gerçek backend mimarisini adım adım uygulamaktır.
 
+---
+
+# Öğrenme Hedefleri
+
+Bu repository boyunca aşağıdaki teknolojiler uygulamalı olarak öğrenilecektir.
+
+- Git
+- GitHub
 - Node.js
 - TypeScript
 - Express
@@ -25,49 +28,198 @@ Bu proje; Node.js, TypeScript, Express, Docker, Docker Compose, Kubernetes, Metr
 - Docker Compose
 - Kubernetes
 - Metrics Server
-- Horizontal Pod Autoscaler
+- Horizontal Pod Autoscaler (HPA)
 - k6
-- Git
-- GitHub
 
-## Servisler
+---
 
-- service-a
-- service-b
+# Kullanılan Teknolojiler
 
-Her serviste başlangıçta şu endpoint'ler bulunacaktır:
+| Teknoloji | Amaç |
+|-----------|------|
+| Node.js | Backend Runtime |
+| TypeScript | Tip güvenliği |
+| Express | HTTP API geliştirme |
+| Git | Versiyon kontrolü |
+| GitHub | Remote repository |
+| Docker | Container oluşturma |
+| Docker Compose | Çoklu container yönetimi |
+| Kubernetes | Container orkestrasyonu |
+| Metrics Server | Kaynak kullanımını izleme |
+| HPA | Otomatik ölçeklendirme |
+| k6 | Load ve Stress Testing |
 
-- `GET /hello`
-- `GET /health`
-- `GET /ready`
-- `GET /work`
+---
 
-## Proje yaklaşımı
+# Proje Yaklaşımı
 
-Proje karmaşık bir iş uygulaması olmayacaktır.
+Bu proje klasik bir CRUD uygulaması değildir.
 
-Şimdilik aşağıdaki yapılar eklenmeyecektir:
+Özellikle eklenmeyecek yapılar:
 
-
-- Veritabanı
-- Kullanıcı sistemi
+- Database
 - Authentication
+- Authorization
+- JWT
 - Redis
 - Kafka
-- Mesaj kuyruğu
+- RabbitMQ
+- Socket
 - Karmaşık CRUD işlemleri
 
-Temel amaç, iki basit HTTP servisi üzerinden container, load testing ve Kubernetes autoscaling süreçlerini öğrenmektir.
+Çünkü bu repository'nin amacı iş geliştirmek değil, **Cloud Native mimarisini öğrenmektir.**
 
-## Durum
+İki küçük HTTP servisi üzerinden;
 
-- Repository yapısı oluşturuldu.
-- Git ve GitHub çalışma düzeni kuruldu.
-- Service A için Node.js ve TypeScript başlangıç yapısı oluşturuldu.
-- Express kuruldu.
-- Environment variable desteği eklendi.
-- `GET /health` endpoint'i geliştiriliyor.
+- Docker
+- Kubernetes
+- Autoscaling
+- Load Testing
 
-## Repository
+konuları uygulamalı olarak öğrenilecektir.
+
+---
+
+# Repository Yapısı
+
+```text
+nodejs-cloud-native-learning
+│
+├── Canonical
+├── Journal
+│   └── Sessions
+├── Notes
+├── Review
+├── deployments
+├── docs
+├── services
+│   ├── service-a
+│   └── service-b
+└── tests
+```
+
+---
+
+# Service A Mimarisi
+
+```text
+service-a
+│
+├── src
+│   ├── config
+│   ├── handlers
+│   ├── routes
+│   ├── workload
+│   ├── app.ts
+│   └── server.ts
+│
+├── .env
+├── package.json
+└── tsconfig.json
+```
+
+Bu mimaride sorumluluklar birbirinden ayrılmıştır.
+
+- `server.ts` → HTTP sunucusunu başlatır.
+- `app.ts` → Express uygulamasını oluşturur.
+- `routes` → Endpoint yönlendirmelerini içerir.
+- `handlers` → HTTP isteklerini işler.
+- `workload` → HTTP'den bağımsız iş mantığını içerir.
+
+---
+
+# Service A Endpoint'leri
+
+| Endpoint | Açıklama |
+|----------|----------|
+| `GET /health` | Servisin çalışır durumda olduğunu doğrular. |
+| `GET /hello` | Basit bir karşılama cevabı döndürür. |
+| `GET /work` | CPU ağırlıklı işlem gerçekleştirerek yük oluşturur. |
+
+`/work` endpoint'i ilerleyen aşamalarda;
+
+- k6
+- Metrics Server
+- Kubernetes
+- Horizontal Pod Autoscaler (HPA)
+
+çalışmalarında kullanılacaktır.
+
+---
+
+# Projeyi Çalıştırma
+
+Repository'yi klonladıktan sonra:
+
+```bash
+cd services/service-a
+
+npm install
+
+npm run dev
+```
+
+Servis varsayılan olarak aşağıdaki adreste çalışacaktır.
+
+```text
+http://localhost:3000
+```
+
+---
+
+# Öğrenme Yol Haritası
+
+| Konu | Durum |
+|------|:----:|
+| Git | ✅ |
+| GitHub | ✅ |
+| Node.js | ✅ |
+| TypeScript | ✅ |
+| Express | ✅ |
+| Docker | ⏳ |
+| Docker Compose | ⏳ |
+| Kubernetes | ⏳ |
+| Metrics Server | ⏳ |
+| Horizontal Pod Autoscaler | ⏳ |
+| k6 | ⏳ |
+
+---
+
+# Mevcut Durum
+
+Şu ana kadar tamamlanan çalışmalar:
+
+- Repository oluşturuldu.
+- Git çalışma düzeni oluşturuldu.
+- Node.js ve TypeScript projesi oluşturuldu.
+- Express kurulumu tamamlandı.
+- Environment Variable desteği eklendi.
+- `app.ts` ve `server.ts` sorumlulukları ayrıldı.
+- Route ve Handler mimarisi oluşturuldu.
+- Workload katmanı oluşturuldu.
+- `GET /health` endpoint'i geliştirildi.
+- `GET /hello` endpoint'i geliştirildi.
+- `GET /work` endpoint'i geliştirildi.
+- Küçük ve mantıksal commit disiplini uygulanmaya başlandı.
+- Detaylı öğrenme dokümantasyonu oluşturuldu.
+
+---
+
+# Dokümantasyon
+
+Repository yalnızca koddan oluşmamaktadır.
+
+Öğrenme süreci aşağıdaki klasörlerde düzenli olarak kayıt altına alınmaktadır.
+
+- `Canonical/` → Kalıcı proje kararları
+- `Journal/` → Günlük çalışma kayıtları
+- `Notes/` → Konu notları
+- `Review/` → Flashcard, soru ve hata kayıtları
+
+---
+
+# Repository
+
+GitHub:
 
 https://github.com/thebilici/nodejs-cloud-native-learning

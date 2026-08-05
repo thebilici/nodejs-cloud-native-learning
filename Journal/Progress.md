@@ -4,12 +4,13 @@ Bu dosya, projenin güncel ilerleme durumunu takip eder.
 
 ## Mevcut aşama
 
-Aşama 3 — Node.js ve TypeScript proje başlangıcı devam ediyor.
+Aşama 4 — Service A mimarisini tamamlama ve Docker aşamasına hazırlanma.
 
 ## Tamamlanan aşamalar
 
 - Aşama 1 — Öğrenme repository yapısını kurma
 - Aşama 2 — Git çalışma düzenini pekiştirme
+- Aşama 3 — Node.js ve TypeScript servis başlangıcı
 
 ## Tamamlanan adımlar
 
@@ -39,19 +40,22 @@ Aşama 3 — Node.js ve TypeScript proje başlangıcı devam ediyor.
 - `git log --oneline` ile commit geçmişi görüntülendi.
 - `README.md` dosyasına GitHub repository bağlantısı eklendi.
 - `git diff` ile working directory değişiklikleri incelendi.
-- `git add README.md` ile belirli bir dosya staging area'ya alındı.
-- `git diff --staged` ile staging area'daki değişiklik incelendi.
-- `git restore --staged README.md` ile dosya silinmeden staging area'dan çıkarıldı.
-- Değişiklik tekrar staging area'ya alındı.
-- Değişiklik commit edildi.
-- Yeni commit GitHub'a gönderildi.
+- Belirli dosyalar `git add <dosya>` komutuyla staging area'ya alındı.
+- `git diff --staged` ile staging area'daki değişiklikler incelendi.
+- `git restore --staged <dosya>` ile dosya silinmeden staging area'dan çıkarıldı.
+- Değişiklikler commit edildi.
+- Commitler GitHub'a gönderildi.
 - Working directory, staging area, local repository ve remote repository ilişkisi uygulamalı olarak öğrenildi.
+- `git add .` yerine yalnızca ilgili dosyaları stage etmenin daha kontrollü olduğu öğrenildi.
+- Commit mesajlarının yapılan değişikliğin gerçek amacını yansıtması gerektiği öğrenildi.
+- Conventional Commit formatı kullanılmaya başlandı.
 
 ### Aşama 3 — Node.js ve TypeScript başlangıcı
 
 - Go ile devam etmek yerine Node.js ve TypeScript kullanılmasına karar verildi.
+- Repository adı `nodejs-cloud-native-learning` olarak güncellendi.
 - Go module yapısı kaldırıldı.
-- `service-a` klasörü Node.js yapısına dönüştürüldü.
+- `service-a` klasörü Node.js ve TypeScript yapısına dönüştürüldü.
 - `src` klasörü oluşturuldu.
 - `config`, `handlers`, `routes` ve `workload` klasörleri oluşturuldu.
 - `package.json` oluşturuldu.
@@ -64,39 +68,87 @@ Aşama 3 — Node.js ve TypeScript proje başlangıcı devam ediyor.
 - `dotenv` kuruldu.
 - `.env` dosyası oluşturuldu.
 - `PORT`, `SERVICE_NAME` ve `APP_VERSION` environment variable olarak tanımlandı.
+- `npm run dev` komutu oluşturuldu.
+- Geliştirme ortamı `tsx watch` ile çalıştırıldı.
 - İlk Express uygulaması oluşturuldu.
 - `GET /health` endpoint'i geliştirildi.
-- `npm run dev` ile geliştirme ortamı hazırlandı.
+- Health endpoint'i Postman ve PowerShell üzerinden test edildi.
 
-## Devam eden adım
+### Aşama 4 — Service A mimarisi
 
-Aşama 3 — Proje mimarisini katmanlara ayırma
+- Express uygulaması ile HTTP sunucusunun başlatılması birbirinden ayrıldı.
+- `app.ts` dosyası oluşturuldu.
+- `server.ts` dosyası sadeleştirildi.
+- `app.listen()` çağrısı `server.ts` içinde bırakıldı.
+- `app.ts`, Express uygulamasını hazırlayan katman haline getirildi.
+- `server.ts`, uygulamayı belirli bir portta çalıştıran başlangıç noktası haline getirildi.
+- Uygulama tanımı ile sunucu başlangıcı arasındaki sorumluluk farkı öğrenildi.
+- `health.handler.ts` oluşturuldu.
+- Health endpoint'inin response üretme mantığı handler katmanına taşındı.
+- `routes/index.ts` oluşturuldu.
+- Express `Router` yapısı kullanılmaya başlandı.
+- Route ve handler sorumlulukları birbirinden ayrıldı.
+- `app.ts` içindeki doğrudan route tanımı kaldırıldı.
+- Route'lar `app.use(router)` ile ana Express uygulamasına bağlandı.
+- `GET /hello` endpoint'i geliştirildi.
+- `hello.handler.ts` oluşturuldu.
+- Yeni bir endpoint eklenirken yalnızca handler ve route katmanının değiştirilmesi gerektiği öğrenildi.
+- `GET /work` endpoint'i geliştirildi.
+- `work.handler.ts` oluşturuldu.
+- `cpu-workload.ts` oluşturuldu.
+- CPU yükü oluşturan işlem workload katmanına taşındı.
+- HTTP katmanı ile CPU workload mantığı birbirinden ayrıldı.
+- Separation of Concerns prensibi uygulandı.
+- CPU ağırlıklı işlemlerin Node.js event loop üzerindeki etkisi incelendi.
+- `/work` endpoint'inin ileride k6 ve Kubernetes HPA testlerinde kullanılmasına karar verildi.
+- `/ready` endpoint'inin şu aşamada eklenmemesine karar verildi.
+- Service A'nın şu anda ayrı bir readiness kontrolü gerektiren dış bağımlılığı olmadığı değerlendirildi.
+- Mevcut `/health`, `/hello` ve `/work` endpoint'leri doğrulandı.
+- Kod değişiklikleri küçük ve mantıksal commitler halinde GitHub'a gönderildi.
 
-Devam eden çalışmalar:
-
-- `env.ts`
-- `app.ts`
-- `health` route ve handler yapısı
-- Klasör mimarisinin tamamlanması
-
-## Sıradaki aşama
-
-Aşama 4 — Servis mimarisini oluşturma
-
-Bu aşamada:
-
-- `config` katmanı oluşturulacak.
-- `routes` katmanı oluşturulacak.
-- `handlers` katmanı oluşturulacak.
-- `app.ts` oluşturulacak.
-- `server.ts` sadeleştirilecek.
-- `/hello` endpoint'i eklenecek.
-- `/ready` endpoint'i eklenecek.
-- `/work` endpoint'i geliştirilecek.
-
-## Son hata
-
-İlk `git push` işleminde HTTP 403 hatası alındı.
+## Güncel Service A mimarisi
 
 ```text
-Permission to thebilici/go-cloud-native-learning.git denied to fatihbilig
+services/
+└── service-a/
+    ├── src/
+    │   ├── config/
+    │   ├── handlers/
+    │   │   ├── health.handler.ts
+    │   │   ├── hello.handler.ts
+    │   │   └── work.handler.ts
+    │   ├── routes/
+    │   │   └── index.ts
+    │   ├── workload/
+    │   │   └── cpu-workload.ts
+    │   ├── app.ts
+    │   └── server.ts
+    ├── .env
+    ├── package.json
+    ├── package-lock.json
+    └── tsconfig.json
+
+    Güncel endpoint'ler
+Health endpoint
+GET /health
+
+Servisin çalışır durumda olduğunu gösterir.
+
+Hello endpoint
+GET /hello
+
+Servis adını içeren basit bir karşılama cevabı döndürür.
+
+Work endpoint
+GET /work
+
+Belirli bir süre CPU ağırlıklı işlem gerçekleştirir.
+
+Bu endpoint ileride:
+
+k6 load test
+Kubernetes resource kullanımı
+Metrics Server
+Horizontal Pod Autoscaler
+
+çalışmalarında kullanılacaktır.
