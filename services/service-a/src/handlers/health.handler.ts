@@ -10,3 +10,4 @@ export const healthHandler = (_req: Request, res: Response) => {
         message: `${SERVICE_NAME} is running`,
     });
 }
+
