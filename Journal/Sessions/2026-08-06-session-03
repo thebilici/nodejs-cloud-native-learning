@@ -1,0 +1,524 @@
+# Session 03 — Docker Temelleri ve Service A Containerization
+
+**Tarih:** 2026-08-06
+
+---
+
+# Bugünkü hedef
+
+Service A uygulamasını Docker image haline getirmek ve container içinde çalıştırmak.
+
+Bu çalışmanın temel amaçları:
+
+- Docker'ın hangi problemi çözdüğünü anlamak
+- Image ve container farkını öğrenmek
+- Dockerfile satırlarını ezberlemeden mantığını kavramak
+- TypeScript uygulamasını production benzeri şekilde derleyip çalıştırmak
+- Container yaşam döngüsünü uygulamalı olarak öğrenmek
+
+---
+
+# Bugün ne yaptım?
+
+## Docker temel kavramlarını öğrendim
+
+- Docker'ın uygulama çalışma ortamını standartlaştırdığını öğrendim.
+- Uygulamanın yalnızca kaynak koddan oluşmadığını gördüm.
+- Node.js sürümü, bağımlılıklar, kaynak kod ve çalıştırma komutunun da çalışma ortamının parçası olduğunu öğrendim.
+- Docker image ile container arasındaki farkı öğrendim.
+- Bir image'dan bir veya birden fazla container oluşturulabileceğini öğrendim.
+- Bir container'ın yalnızca tek bir image'dan oluşturulduğunu öğrendim.
+
+---
+
+## Dockerfile oluşturdum
+
+Service A klasöründe `Dockerfile` oluşturdum.
+
+Dockerfile içeriği:
+
+```dockerfile
+FROM node:22-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+RUN npm run build
+
+CMD ["npm", "start"]
+```
+
+---
+
+## Base image seçimini öğrendim
+
+```dockerfile
+FROM node:22-alpine
+```
+
+satırıyla:
+
+- Node.js 22 sürümünü kullandım.
+- Alpine Linux tabanlı hafif bir image seçtim.
+- Node.js sürümünü sabitlemenin neden önemli olduğunu öğrendim.
+- Base image kavramını öğrendim.
+- Alpine image kullanımının boyut ve kaynak tüketimi açısından avantajlarını öğrendim.
+
+---
+
+## Container çalışma dizinini oluşturdum
+
+```dockerfile
+WORKDIR /app
+```
+
+satırıyla container içindeki çalışma dizinini `/app` olarak belirledim.
+
+Şunları öğrendim:
+
+- `/app` klasörü Windows üzerindeki `C:\app` klasörü değildir.
+- `/app`, Docker'ın yönettiği Linux tabanlı container dosya sistemi içinde bulunur.
+- Sonraki Dockerfile komutları bu klasörü esas alır.
+
+---
+
+## Package dosyalarını image içine kopyaladım
+
+```dockerfile
+COPY package*.json ./
+```
+
+satırıyla:
+
+- `package.json`
+- `package-lock.json`
+
+dosyalarını image içindeki `/app` klasörüne kopyaladım.
+
+`package*.json` kalıbındaki `*` karakterinin iki package dosyasını da kapsadığını öğrendim.
+
+---
+
+## Docker cache mantığını öğrendim
+
+Kaynak koddan önce package dosyalarını kopyalamanın neden önemli olduğunu öğrendim.
+
+Eğer package dosyaları değişmezse Docker:
+
+```dockerfile
+RUN npm install
+```
+
+katmanını cache üzerinden tekrar kullanabilir.
+
+Böylece her kaynak kod değişikliğinde bağımlılıklar yeniden kurulmaz.
+
+Bu yaklaşım:
+
+- Build süresini azaltır.
+- Ağ kullanımını azaltır.
+- Docker layer cache kullanımını iyileştirir.
+
+---
+
+## Bağımlılıkları image içinde kurdum
+
+```dockerfile
+RUN npm install
+```
+
+satırıyla bağımlılıkları image build aşamasında kurdum.
+
+Şunları öğrendim:
+
+- `RUN`, image build edilirken çalışır.
+- Express, npm'in içinde bulunan bir kütüphane değildir.
+- Express ve diğer paketler npm registry üzerinden indirilir.
+- Bağımlılıklar image içindeki `/app/node_modules` klasörüne kurulur.
+- Aynı image'dan birden fazla container oluşturulduğunda `npm install` tekrar çalışmaz.
+
+---
+
+## Kaynak kodu image içine kopyaladım
+
+```dockerfile
+COPY . .
+```
+
+satırındaki iki noktanın farklı anlamlara sahip olduğunu öğrendim.
+
+İlk nokta:
+
+```text
+Docker build context içindeki kaynak klasör
+```
+
+İkinci nokta:
+
+```text
+Container içindeki mevcut çalışma dizini
+```
+
+`WORKDIR /app` kullanıldığı için hedef `/app` oldu.
+
+---
+
+## `.dockerignore` oluşturdum
+
+Service A klasöründe `.dockerignore` dosyası oluşturdum.
+
+İçeriği:
+
+```dockerignore
+node_modules
+dist
+.env
+.git
+.gitignore
+npm-debug.log
+```
+
+Şunları öğrendim:
+
+- `.gitignore`, Git tarafından takip edilmeyecek dosyaları belirler.
+- `.dockerignore`, Docker build context içine alınmayacak dosyaları belirler.
+- `.env` Git tarafından takip edilmese bile `.dockerignore` içinde yoksa Docker build context'ine girebilir.
+- Host üzerindeki `node_modules` klasörünü Linux tabanlı image içine kopyalamak doğru değildir.
+- `.env` dosyasını image içine gömmek güvenlik ve ortam bağımsızlığı açısından yanlış bir yaklaşımdır.
+
+---
+
+## TypeScript kodunu build ettim
+
+Yerel ortamda şu komutu kullandım:
+
+```powershell
+npm run build
+```
+
+Bu komut package script'i üzerinden `tsc` çalıştırdı.
+
+Sonuç olarak:
+
+```text
+src/*.ts
+↓
+dist/*.js
+```
+
+akışı gerçekleşti.
+
+`dist` klasöründe şu dosyaların oluştuğunu doğruladım:
+
+- `dist/server.js`
+- `dist/app.js`
+- `dist/handlers`
+- `dist/routes`
+- `dist/workload`
+
+Şunları öğrendim:
+
+- `src`, TypeScript kaynak kodunu içerir.
+- `dist`, derlenmiş JavaScript çıktısını içerir.
+- `dist` içindeki dosyalar elle düzenlenmez.
+- Kaynak kod değişiklikleri `src` altında yapılır.
+
+---
+
+## Docker image içinde build işlemi tanımladım
+
+```dockerfile
+RUN npm run build
+```
+
+satırıyla TypeScript kodunun image build aşamasında JavaScript'e çevrilmesini sağladım.
+
+Bu komut çalışmadan önce:
+
+- Kaynak kod
+- `tsconfig.json`
+- Bağımlılıklar
+
+image içinde hazır olmalıdır.
+
+---
+
+## Container başlangıç komutunu tanımladım
+
+```dockerfile
+CMD ["npm", "start"]
+```
+
+satırıyla container başladığında çalışacak ana komutu belirledim.
+
+`npm start`, package script'i üzerinden şu komutu çalıştırdı:
+
+```text
+node dist/server.js
+```
+
+`RUN` ile `CMD` arasındaki farkı öğrendim:
+
+```text
+RUN
+→ Image build edilirken çalışır.
+
+CMD
+→ Container başlatıldığında çalışır.
+```
+
+---
+
+## Docker image oluşturdum
+
+Build işlemi sırasında Buildx'in `docker-container` driver kullandığını gördüm.
+
+İlk build sonucunda şu uyarıyı aldım:
+
+```text
+No output specified with docker-container driver.
+Build result will only remain in the build cache.
+```
+
+Build sonucunu yerel Docker image store'a yüklemek için `--load` kullanılması gerektiğini öğrendim.
+
+Kullandığım komut:
+
+```powershell
+docker buildx build --load -t service-a:1.0 .
+```
+
+Oluşan image'ı şu komutla doğruladım:
+
+```powershell
+docker images service-a
+```
+
+Oluşan image:
+
+```text
+service-a:1.0
+```
+
+---
+
+## Container oluşturdum
+
+Image'dan container oluşturmak için şu komutu kullandım:
+
+```powershell
+docker run --name service-a-container -p 3000:3000 service-a:1.0
+```
+
+Şunları öğrendim:
+
+- `docker run`, image'dan yeni bir container oluşturur ve çalıştırır.
+- `--name`, container'a okunabilir bir isim verir.
+- `-p`, host portu ile container portunu eşleştirir.
+- Port mapping formatı `HOST_PORT:CONTAINER_PORT` şeklindedir.
+
+Bu projede:
+
+```text
+localhost:3000
+↓
+container:3000
+```
+
+eşleştirmesi yapıldı.
+
+---
+
+## Endpointleri container üzerinden test ettim
+
+Aşağıdaki endpointleri başarıyla doğruladım:
+
+```text
+GET /health
+GET /hello
+GET /work
+```
+
+Bu test sayesinde Service A'nın host üzerindeki Node.js geliştirme sürecinden bağımsız olarak container içinde çalıştığını doğruladım.
+
+---
+
+## Container loglarını inceledim
+
+Şu komutu kullandım:
+
+```powershell
+docker logs service-a-container
+```
+
+Log çıktısında:
+
+```text
+npm start
+↓
+node dist/server.js
+↓
+service-a is running on port 3000
+```
+
+akışını doğruladım.
+
+---
+
+## Container yaşam döngüsünü öğrendim
+
+Kullandığım komutlar:
+
+```powershell
+docker ps
+docker ps -a
+docker logs service-a-container
+docker stop service-a-container
+docker start service-a-container
+docker rm service-a-container
+```
+
+Şunları öğrendim:
+
+- `docker ps`, yalnızca çalışan container'ları gösterir.
+- `docker ps -a`, çalışan ve durmuş bütün container'ları gösterir.
+- `docker stop`, container'ı durdurur fakat silmez.
+- `docker start`, durmuş mevcut container'ı yeniden çalıştırır.
+- `docker run`, image'dan yeni bir container oluşturur.
+- `docker rm`, container'ı siler.
+- Container silinse bile image sistemde kalmaya devam eder.
+- Aynı image'dan birden fazla bağımsız container oluşturulabilir.
+
+---
+
+# Karşılaştığım problemler
+
+## Problem 1 — Build sonucu image listesinde görünmedi
+
+### Hata veya uyarı
+
+```text
+No output specified with docker-container driver.
+Build result will only remain in the build cache.
+```
+
+### Sebep
+
+Aktif Buildx builder `docker-container` driver kullanıyordu.
+
+Bu driver build sonucunu varsayılan olarak yerel Docker image store'a yüklemiyordu.
+
+### Çözüm
+
+Build komutuna `--load` parametresi eklendi:
+
+```powershell
+docker buildx build --load -t service-a:1.0 .
+```
+
+### Çıkardığım ders
+
+Build işleminin başarılı olması, image'ın her zaman yerel image listesine yüklendiği anlamına gelmez.
+
+Build driver ve output davranışı kontrol edilmelidir.
+
+---
+
+# Oluşturulan dosyalar
+
+- `services/service-a/Dockerfile`
+- `services/service-a/.dockerignore`
+- `Journal/Sessions/2026-08-06-session-03.md`
+
+---
+
+# Üretilen çıktılar
+
+- `services/service-a/dist/`
+- `service-a:1.0` Docker image
+- `service-a-container` Docker container
+
+`dist/`, Docker image ve container Git tarafından kaynak kod olarak takip edilmez.
+
+---
+
+# Kullanılan komutlar
+
+```powershell
+npm run build
+Get-ChildItem dist -Recurse
+docker version
+docker buildx build --load -t service-a:1.0 .
+docker images service-a
+docker run --name service-a-container -p 3000:3000 service-a:1.0
+docker run -d --name service-a-container -p 3000:3000 service-a:1.0
+docker ps
+docker ps -a
+docker logs service-a-container
+docker logs -f service-a-container
+docker stop service-a-container
+docker start service-a-container
+docker rm service-a-container
+```
+
+---
+
+# Gün sonunda oluşan akış
+
+```text
+Dockerfile
+    │
+    ▼
+docker buildx build --load
+    │
+    ▼
+service-a:1.0 image
+    │
+    ▼
+docker run
+    │
+    ▼
+service-a-container
+    │
+    ▼
+localhost:3000
+    │
+    ├── /health
+    ├── /hello
+    └── /work
+```
+
+---
+
+# Gün sonu değerlendirmesi
+
+Bugün Service A uygulamasını Docker image haline getirip container içinde çalıştırdım.
+
+Dockerfile içindeki satırları yalnızca kullanmakla kalmadım; her satırın build ve runtime sürecindeki görevini öğrendim.
+
+Image ile container arasındaki farkı, Docker build cache mantığını, build context'i, `.dockerignore` kullanımını ve container yaşam döngüsünü uygulamalı olarak gördüm.
+
+Service A artık host bilgisayardaki geliştirme komutuna bağlı olmadan, kendi Node.js çalışma ortamı ve bağımlılıklarıyla container içinde çalışabilmektedir.
+
+---
+
+# Bir sonraki hedef
+
+Bir sonraki teknik aşamada Docker Network konusu öğrenilecek.
+
+Bu aşamada:
+
+- Docker network kavramı
+- Bridge network
+- Özel network oluşturma
+- Container adıyla erişim
+- Container içindeki `localhost`
+- İki container arasında iletişim
+- Docker Compose network mantığı
+
+konuları ele alınacaktır.

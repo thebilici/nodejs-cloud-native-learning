@@ -11,6 +11,8 @@ Aşama 4 — Service A mimarisini tamamlama ve Docker aşamasına hazırlanma.
 - Aşama 1 — Öğrenme repository yapısını kurma
 - Aşama 2 — Git çalışma düzenini pekiştirme
 - Aşama 3 — Node.js ve TypeScript servis başlangıcı
+- Aşama 4 — Service A mimarisini oluşturma
+- Aşama 5 — Service A'yı Docker container içinde çalıştırma
 
 ## Tamamlanan adımlar
 
@@ -106,6 +108,70 @@ Aşama 4 — Service A mimarisini tamamlama ve Docker aşamasına hazırlanma.
 - Mevcut `/health`, `/hello` ve `/work` endpoint'leri doğrulandı.
 - Kod değişiklikleri küçük ve mantıksal commitler halinde GitHub'a gönderildi.
 
+### Aşama 5 — Docker temelleri ve Service A containerization
+
+- Docker'ın hangi problemi çözdüğü öğrenildi.
+- Uygulama çalışma ortamının Docker ile standartlaştırılabileceği öğrenildi.
+- Docker Image ile Docker Container arasındaki fark öğrenildi.
+- Bir image'dan bir veya birden fazla container oluşturulabileceği öğrenildi.
+- Bir container'ın yalnızca tek bir image'dan oluşturulduğu öğrenildi.
+- Dockerfile'ın image oluşturma talimatlarını içeren bir tarif dosyası olduğu öğrenildi.
+- Service A klasöründe `Dockerfile` oluşturuldu.
+- `FROM node:22-alpine` ile Node.js 22 ve Alpine Linux tabanlı base image seçildi.
+- Base image ve version pinning kavramları öğrenildi.
+- Alpine image kullanımının boyut ve kaynak tüketimi açısından avantajları incelendi.
+- `WORKDIR /app` ile container içindeki çalışma dizini oluşturuldu.
+- Host dosya sistemi ile container dosya sistemi arasındaki fark öğrenildi.
+- `COPY package*.json ./` ile bağımlılık tanım dosyaları image içine kopyalandı.
+- `package*.json` kalıbının `package.json` ve `package-lock.json` dosyalarını kapsadığı öğrenildi.
+- Docker layer ve build cache mantığı öğrenildi.
+- Kaynak koddan önce package dosyalarını kopyalamanın build cache açısından önemi öğrenildi.
+- `RUN npm install` ile bağımlılıklar image build aşamasında kuruldu.
+- Express'in npm içinde yer alan bir paket olmadığı, npm registry üzerinden indirilen bir paket olduğu öğrenildi.
+- `COPY . .` komutundaki kaynak ve hedef noktalarının farklı dosya sistemlerini ifade ettiği öğrenildi.
+- Docker build context kavramı öğrenildi.
+- `.dockerignore` dosyası oluşturuldu.
+- `node_modules`, `dist`, `.env`, `.git` ve gereksiz log dosyaları build context dışında bırakıldı.
+- `.gitignore` ile `.dockerignore` arasındaki fark öğrenildi.
+- `.env` dosyasının image içine gömülmemesi gerektiği öğrenildi.
+- `RUN npm run build` ile TypeScript kaynak kodu JavaScript'e derlendi.
+- `src` klasörünün kaynak kodu, `dist` klasörünün derlenmiş JavaScript çıktısını içerdiği öğrenildi.
+- `CMD ["npm", "start"]` ile container başlangıç komutu tanımlandı.
+- `RUN` ve `CMD` arasındaki build-time ve runtime farkı öğrenildi.
+- Service A için Docker image oluşturuldu.
+- Buildx `docker-container` driver kullanıldığı için build sonucunun `--load` ile yerel image store'a yüklenmesi gerektiği öğrenildi.
+- `service-a:1.0` image'ı başarıyla oluşturuldu.
+- Image, `docker images service-a` komutuyla doğrulandı.
+- Image'dan `service-a-container` adlı container oluşturuldu.
+- Host portu ile container portu `-p 3000:3000` kullanılarak eşleştirildi.
+- `/health`, `/hello` ve `/work` endpoint'leri container üzerinden başarıyla test edildi.
+- Container foreground ve detached modda çalıştırıldı.
+- `docker ps` ile çalışan container'lar görüntülendi.
+- `docker ps -a` ile çalışan ve durmuş bütün container'lar görüntülendi.
+- `docker logs` ile container logları incelendi.
+- `docker stop` ile container durduruldu.
+- `docker start` ile mevcut container yeniden başlatıldı.
+- `docker run` ile `docker start` arasındaki fark öğrenildi.
+- Container'ı durdurmanın container'ı silmediği öğrenildi.
+- Container silinse bile image'ın yerel sistemde kalmaya devam ettiği öğrenildi.
+- Service A'nın Node.js geliştirme ortamından bağımsız olarak container içinde çalıştığı doğrulandı.
+
+## Sıradaki teknik aşama
+
+Aşama 6 — Docker Network
+
+Bu aşamada:
+
+- Docker network kavramı öğrenilecek.
+- Varsayılan Docker network türleri incelenecek.
+- Bridge network mantığı öğrenilecek.
+- Özel bir Docker network oluşturulacak.
+- Container'ların aynı network üzerinde birbirini nasıl bulduğu incelenecek.
+- Container adıyla servis keşfi mantığı öğrenilecek.
+- `localhost` adresinin container içindeki anlamı incelenecek.
+- Service A ve ileride oluşturulacak Service B arasındaki iletişim için temel hazırlanacak.
+- Docker Compose'un otomatik network oluşturma davranışına hazırlık yapılacak.
+
 ## Güncel Service A mimarisi
 
 ```text
@@ -123,7 +189,10 @@ services/
     │   │   └── cpu-workload.ts
     │   ├── app.ts
     │   └── server.ts
+    ├── dist/
+    ├── .dockerignore
     ├── .env
+    ├── Dockerfile
     ├── package.json
     ├── package-lock.json
     └── tsconfig.json

@@ -169,3 +169,52 @@ Sorulara önce kendi cümlelerimle cevap vermeliyim. Cevabı hatırlayamazsam il
 2. Böyle bir hata aldığında ilk hangi kontrolleri yaparsın?
 
 3. `app.ts` ile `server.ts` ayrımında yaşadığımız problemi nasıl çözdük?
+
+---
+
+# Docker Temelleri
+
+## Docker kavramları
+
+1. Docker hangi problemi çözer?
+2. Docker Image ile Docker Container arasındaki fark nedir?
+3. Bir image'dan birden fazla container oluşturulabilir mi?
+4. Bir container neden yalnızca tek bir image'dan oluşturulur?
+5. Dockerfile'ın görevi nedir?
+6. Base image nedir?
+7. Neden `node:22-alpine` kullandık?
+
+## Dockerfile
+
+1. `FROM` ne işe yarar?
+2. `WORKDIR` ne işe yarar?
+3. `COPY package*.json ./` ne yapar?
+4. Neden önce package dosyalarını kopyalıyoruz?
+5. `RUN npm install` ne zaman çalışır?
+6. `COPY . .` komutundaki iki `.` neyi ifade eder?
+7. Docker Build Context nedir?
+8. `.dockerignore` neden kullanılır?
+9. `.gitignore` ile `.dockerignore` arasındaki fark nedir?
+10. Neden `.env` dosyasını image içine koymuyoruz?
+11. `RUN npm run build` ne yapar?
+12. `src` ile `dist` arasındaki fark nedir?
+13. `CMD ["npm", "start"]` ne zaman çalışır?
+14. `RUN` ile `CMD` arasındaki fark nedir?
+
+## Docker komutları
+
+1. `docker build` ne yapar?
+2. `docker run` ne yapar?
+3. `docker ps` ile `docker ps -a` arasındaki fark nedir?
+4. `docker logs` ne işe yarar?
+5. `docker stop` ne yapar?
+6. `docker start` ne yapar?
+7. `docker rm` ne yapar?
+
+## Docker yaşam döngüsü
+
+1. Image ile Container arasındaki ilişkiyi anlat.
+2. Container durdurulunca neden `docker start` kullanıyoruz?
+3. `docker run` neden her zaman yeni bir container oluşturur?
+4. Container silinirse image'a ne olur?
+5. Docker'da build aşaması ile runtime aşaması arasındaki fark nedir?

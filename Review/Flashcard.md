@@ -1466,6 +1466,279 @@ Kontrol edilmesi gereken noktalar:
 
 ---
 
+---
+
+# Docker Flashcard'ları
+
+### Kart 54
+
+**Soru:** Docker hangi problemi çözer?
+
+**Cevap:**
+Uygulamanın farklı bilgisayarlarda aynı çalışma ortamıyla çalışmasını sağlar ve ortam bağımlılıklarını ortadan kaldırır.
+
+---
+
+### Kart 55
+
+**Soru:** Docker Image nedir?
+
+**Cevap:**
+Container oluşturmak için kullanılan, uygulama ve çalışma ortamını içeren değiştirilemez şablondur.
+
+---
+
+### Kart 56
+
+**Soru:** Docker Container nedir?
+
+**Cevap:**
+Bir Docker Image'dan oluşturulan çalışan izole uygulama örneğidir.
+
+---
+
+### Kart 57
+
+**Soru:** Bir image'dan kaç container oluşturulabilir?
+
+**Cevap:**
+İstenildiği kadar container oluşturulabilir.
+
+---
+
+### Kart 58
+
+**Soru:** Bir container kaç image'dan oluşturulabilir?
+
+**Cevap:**
+Bir container yalnızca tek bir image'dan oluşturulur.
+
+---
+
+### Kart 59
+
+**Soru:** Dockerfile nedir?
+
+**Cevap:**
+Docker image oluşturmak için kullanılan talimat dosyasıdır.
+
+---
+
+### Kart 60
+
+**Soru:** `FROM` komutunun görevi nedir?
+
+**Cevap:**
+Image'ın hangi base image üzerine oluşturulacağını belirler.
+
+---
+
+### Kart 61
+
+**Soru:** Neden `node:22-alpine` kullandık?
+
+**Cevap:**
+Belirli bir Node.js sürümünü sabitlemek ve daha küçük, hafif bir Linux tabanlı image kullanmak için.
+
+---
+
+### Kart 62
+
+**Soru:** `WORKDIR` ne işe yarar?
+
+**Cevap:**
+Container içindeki çalışma dizinini belirler ve sonraki komutlar bu dizinde çalışır.
+
+---
+
+### Kart 63
+
+**Soru:** `COPY package*.json ./` ne yapar?
+
+**Cevap:**
+`package.json` ve `package-lock.json` dosyalarını container içindeki çalışma dizinine kopyalar.
+
+---
+
+### Kart 64
+
+**Soru:** Neden önce yalnızca package dosyalarını kopyalıyoruz?
+
+**Cevap:**
+Docker layer cache'i verimli kullanmak ve bağımlılıkları gereksiz yere tekrar kurmamak için.
+
+---
+
+### Kart 65
+
+**Soru:** `RUN npm install` ne zaman çalışır?
+
+**Cevap:**
+Image build edilirken çalışır.
+
+---
+
+### Kart 66
+
+**Soru:** `COPY . .` komutundaki iki nokta aynı şeyi mi ifade eder?
+
+**Cevap:**
+Hayır. İlk nokta host üzerindeki build context'i, ikinci nokta container içindeki hedef dizini ifade eder.
+
+---
+
+### Kart 67
+
+**Soru:** `.dockerignore` dosyasının görevi nedir?
+
+**Cevap:**
+Docker build context'ine alınmayacak dosya ve klasörleri belirler.
+
+---
+
+### Kart 68
+
+**Soru:** `.gitignore` ile `.dockerignore` arasındaki fark nedir?
+
+**Cevap:**
+`.gitignore` Git'in takip etmeyeceği dosyaları, `.dockerignore` ise Docker'ın image'a dahil etmeyeceği dosyaları belirler.
+
+---
+
+### Kart 69
+
+**Soru:** Neden `.env` dosyasını image içine kopyalamıyoruz?
+
+**Cevap:**
+Ortama özel bilgileri image'a gömmemek, güvenliği ve taşınabilirliği korumak için.
+
+---
+
+### Kart 70
+
+**Soru:** `RUN npm run build` ne yapar?
+
+**Cevap:**
+TypeScript kaynak kodunu JavaScript'e derler.
+
+---
+
+### Kart 71
+
+**Soru:** `src` ile `dist` arasındaki fark nedir?
+
+**Cevap:**
+`src` kaynak TypeScript kodunu, `dist` ise derlenmiş JavaScript çıktısını içerir.
+
+---
+
+### Kart 72
+
+**Soru:** `CMD` ne zaman çalışır?
+
+**Cevap:**
+Container başlatıldığında çalışır.
+
+---
+
+### Kart 73
+
+**Soru:** `RUN` ile `CMD` arasındaki fark nedir?
+
+**Cevap:**
+`RUN` image build edilirken çalışır. `CMD` ise container çalıştırıldığında çalışır.
+
+---
+
+### Kart 74
+
+**Soru:** `docker build` ne yapar?
+
+**Cevap:**
+Dockerfile'daki talimatları kullanarak image oluşturur.
+
+---
+
+### Kart 75
+
+**Soru:** `docker run` ne yapar?
+
+**Cevap:**
+Bir image'dan yeni bir container oluşturur ve çalıştırır.
+
+---
+
+### Kart 76
+
+**Soru:** `docker ps` ne gösterir?
+
+**Cevap:**
+Yalnızca çalışan container'ları gösterir.
+
+---
+
+### Kart 77
+
+**Soru:** `docker ps -a` ne gösterir?
+
+**Cevap:**
+Çalışan ve durmuş tüm container'ları gösterir.
+
+---
+
+### Kart 78
+
+**Soru:** `docker logs` ne gösterir?
+
+**Cevap:**
+Container'ın ürettiği log çıktısını gösterir.
+
+---
+
+### Kart 79
+
+**Soru:** `docker stop` ne yapar?
+
+**Cevap:**
+Çalışan container'ı durdurur ancak silmez.
+
+---
+
+### Kart 80
+
+**Soru:** `docker start` ne yapar?
+
+**Cevap:**
+Daha önce oluşturulmuş ve durmuş container'ı yeniden çalıştırır.
+
+---
+
+### Kart 81
+
+**Soru:** `docker rm` ne yapar?
+
+**Cevap:**
+Container'ı sistemden siler.
+
+---
+
+### Kart 82
+
+**Soru:** `docker stop` işleminden sonra neden `docker start` kullanıyoruz?
+
+**Cevap:**
+Çünkü container silinmemiştir. Aynı container'ı yeniden çalıştırmak için `docker start` kullanılır. `docker run` ise yeni bir container oluşturur.
+
+---
+
+### Kart 83
+
+**Soru:** Container silinirse image da silinir mi?
+
+**Cevap:**
+Hayır. Image sistemde kalmaya devam eder ve tekrar yeni container oluşturmak için kullanılabilir.
+
+---
 # Tekrar Edilecek Kartlar
 
 Yanlış veya eksik cevaplanan kartlar konu başlıklarına göre bu bölüme eklenecektir.

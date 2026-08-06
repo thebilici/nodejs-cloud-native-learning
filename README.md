@@ -42,7 +42,7 @@ Bu repository boyunca aşağıdaki teknolojiler uygulamalı olarak öğrenilecek
 | Express | HTTP API geliştirme |
 | Git | Versiyon kontrolü |
 | GitHub | Remote repository |
-| Docker | Container oluşturma |
+| Docker | Service A için image ve container oluşturma |
 | Docker Compose | Çoklu container yönetimi |
 | Kubernetes | Container orkestrasyonu |
 | Metrics Server | Kaynak kullanımını izleme |
@@ -113,8 +113,12 @@ service-a
 │   ├── app.ts
 │   └── server.ts
 │
+├── dist
+├── .dockerignore
 ├── .env
+├── Dockerfile
 ├── package.json
+├── package-lock.json
 └── tsconfig.json
 ```
 
@@ -125,6 +129,9 @@ Bu mimaride sorumluluklar birbirinden ayrılmıştır.
 - `routes` → Endpoint yönlendirmelerini içerir.
 - `handlers` → HTTP isteklerini işler.
 - `workload` → HTTP'den bağımsız iş mantığını içerir.
+- `Dockerfile` → Docker image'ının nasıl oluşturulacağını tanımlar.
+- `.dockerignore` → Docker build sırasında dahil edilmeyecek dosyaları belirler.
+- `dist` → TypeScript kodunun derlenmiş JavaScript çıktısını içerir.
 
 ---
 
@@ -147,7 +154,7 @@ Bu mimaride sorumluluklar birbirinden ayrılmıştır.
 
 ---
 
-# Projeyi Çalıştırma
+# Projeyi Yerel Ortamda Çalıştırma
 
 Repository'yi klonladıktan sonra:
 
@@ -167,6 +174,59 @@ http://localhost:3000
 
 ---
 
+# Docker ile Çalıştırma
+
+Service A klasörüne geçin:
+
+```bash
+cd services/service-a
+```
+
+Docker image oluşturun:
+
+```bash
+docker buildx build --load -t service-a:1.0 .
+```
+
+Container oluşturup çalıştırın:
+
+```bash
+docker run -d --name service-a-container -p 3000:3000 service-a:1.0
+```
+
+Çalışan container'ları görüntüleyin:
+
+```bash
+docker ps
+```
+
+Container loglarını görüntüleyin:
+
+```bash
+docker logs service-a-container
+```
+
+Container'ı durdurun:
+
+```bash
+docker stop service-a-container
+```
+
+Aynı container'ı yeniden başlatın:
+
+```bash
+docker start service-a-container
+```
+
+Container'ı silin:
+
+```bash
+docker stop service-a-container
+docker rm service-a-container
+```
+
+---
+
 # Öğrenme Yol Haritası
 
 | Konu | Durum |
@@ -176,7 +236,7 @@ http://localhost:3000
 | Node.js | ✅ |
 | TypeScript | ✅ |
 | Express | ✅ |
-| Docker | ⏳ |
+| Docker | ✅ |
 | Docker Compose | ⏳ |
 | Kubernetes | ⏳ |
 | Metrics Server | ⏳ |
@@ -200,6 +260,14 @@ http://localhost:3000
 - `GET /health` endpoint'i geliştirildi.
 - `GET /hello` endpoint'i geliştirildi.
 - `GET /work` endpoint'i geliştirildi.
+- Service A için Dockerfile oluşturuldu.
+- `.dockerignore` dosyası oluşturuldu.
+- Docker layer cache ve build context mantığı öğrenildi.
+- TypeScript kodu Docker image build aşamasında derlendi.
+- `service-a:1.0` Docker image'ı oluşturuldu.
+- Service A container içinde başarıyla çalıştırıldı.
+- `/health`, `/hello` ve `/work` endpoint'leri container üzerinden doğrulandı.
+- Container yaşam döngüsü komutları uygulandı.
 - Küçük ve mantıksal commit disiplini uygulanmaya başlandı.
 - Detaylı öğrenme dokümantasyonu oluşturuldu.
 
@@ -215,6 +283,24 @@ Repository yalnızca koddan oluşmamaktadır.
 - `Journal/` → Günlük çalışma kayıtları
 - `Notes/` → Konu notları
 - `Review/` → Flashcard, soru ve hata kayıtları
+
+---
+
+# Sonraki Aşama
+
+Bir sonraki teknik konu **Docker Network** olacaktır.
+
+Bu aşamada;
+
+- Docker Network
+- Bridge Network
+- Custom Network
+- Container DNS
+- Container Name Resolution
+- Service A ↔ Service B iletişimi
+- Docker Compose'un network yapısı
+
+konuları uygulamalı olarak öğrenilecektir.
 
 ---
 
