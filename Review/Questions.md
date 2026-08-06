@@ -218,3 +218,172 @@ Sorulara önce kendi cümlelerimle cevap vermeliyim. Cevabı hatırlayamazsam il
 3. `docker run` neden her zaman yeni bir container oluşturur?
 4. Container silinirse image'a ne olur?
 5. Docker'da build aşaması ile runtime aşaması arasındaki fark nedir?
+
+
+# Docker Network
+
+## 1. Docker Network neden gereklidir?
+
+---
+
+## 2. Docker'ın varsayılan network türü hangisidir?
+
+---
+
+## 3. Bridge network ile custom bridge network arasındaki fark nedir?
+
+---
+
+## 4. Docker DNS nedir ve nasıl çalışır?
+
+---
+
+## 5. Container IP adresi yerine neden container adı kullanılır?
+
+---
+
+## 6. Container içindeki localhost neyi ifade eder?
+
+---
+
+## 7. Service A neden localhost üzerinden Service B'ye erişemez?
+
+---
+
+## 8. Docker Network inspect komutu ne işe yarar?
+
+---
+
+## 9. Docker run komutundaki --network parametresi ne yapar?
+
+---
+
+## 10. Geçici curl container'ı neden kullandık?
+
+---
+
+# Service B
+
+## 11. Service B neden ayrı bir servis olarak oluşturuldu?
+
+---
+
+## 12. Service B'nin görevi nedir?
+
+---
+
+## 13. Service B neden farklı portta çalışıyor?
+
+---
+
+## 14. Service B'de neden workload klasörü oluşturulmadı?
+
+---
+
+## 15. app.ts ile server.ts arasındaki sorumluluk farkı nedir?
+
+---
+
+## 16. Handler ile Route arasındaki fark nedir?
+
+---
+
+# Docker
+
+## 17. Dockerfile neden oluşturulur?
+
+---
+
+## 18. Docker Build Context nedir?
+
+---
+
+## 19. .dockerignore neden kullanılır?
+
+---
+
+## 20. .gitignore ile .dockerignore arasındaki fark nedir?
+
+---
+
+## 21. RUN ile CMD arasındaki fark nedir?
+
+---
+
+## 22. Build aşaması ile runtime aşaması arasındaki fark nedir?
+
+---
+
+## 23. Kod değişince neden image yeniden build edilir?
+
+---
+
+## 24. Kod değişince neden container yeniden oluşturulur?
+
+---
+
+## 25. docker inspect komutunu neden kullandık?
+
+---
+
+# Service to Service Communication
+
+## 26. Service-to-Service Communication nedir?
+
+---
+
+## 27. Bu projede HTTP isteğini hangi servis başlatıyor?
+
+---
+
+## 28. fetch() nedir?
+
+---
+
+## 29. fetch() varsayılan olarak hangi HTTP metodunu kullanır?
+
+---
+
+## 30. await neden kullanılır?
+
+---
+
+## 31. response.json() ne yapar?
+
+---
+
+## 32. SERVICE_B_URL neden Service A içinde bulunuyor?
+
+---
+
+## 33. Service A neden Service B'nin adresini bilmek zorundadır?
+
+---
+
+## 34. Service A ile Service B arasındaki tam iletişim akışını anlat.
+
+---
+
+## 35. Docker DNS bu iletişimde hangi görevi üstleniyor?
+
+---
+
+# Genel Mimari
+
+## 36. Şu anki proje mimarisini baştan sona anlat.
+
+---
+
+## 37. Client isteği ilk olarak nereye gider?
+
+---
+
+## 38. Service B cevabı doğrudan Client'a mı döndürür?
+
+---
+
+## 39. Service A neden ara katman olarak çalışıyor?
+
+---
+
+## 40. Bu projede şimdiye kadar öğrendiğin en önemli Docker kavramları nelerdir?

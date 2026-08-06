@@ -306,3 +306,104 @@ Container çalıştırırken:
 4. `docker ps -a` ile container durumunu kontrol et.
 5. `docker logs` ile uygulama çıktısını incele.
 6. Endpointleri container üzerinden tekrar test et.
+
+# Karşılaştığım problemler
+
+## Problem 1 — Service B klasör adı yanlış oluşturuldu
+
+Yanlış:
+
+```text
+services-b
+```
+
+Doğru:
+
+```text
+service-b
+```
+
+### Çözüm
+
+```powershell
+Rename-Item services\services-b service-b
+```
+
+---
+
+## Problem 2 — Docker build komutunda `-t` unutuldu
+
+Yanlış:
+
+```powershell
+docker buildx build --load service-b:1.0 .
+```
+
+Doğru:
+
+```powershell
+docker buildx build --load -t service-b:1.0 .
+```
+
+---
+
+## Problem 3 — Dockerfile dosya adı yanlış yazıldı
+
+Yanlış:
+
+```text
+DockerFile
+```
+
+Doğru:
+
+```text
+Dockerfile
+```
+
+---
+
+## Problem 4 — Yanlış Go image kullanıldı
+
+Container environment değerlerinde:
+
+```text
+GOLANG_VERSION
+GOPATH
+```
+
+görüldü.
+
+Bu değerler yanlış image kullanıldığını gösterdi.
+
+Container ve image temizlenerek Node.js image yeniden oluşturuldu.
+
+---
+
+## Problem 5 — Service B `.env` dosyası eksikti
+
+Service B’nin runtime environment değerleri tanımlanmadığı için port ve servis yapılandırması beklenen şekilde çalışmadı.
+
+`.env` dosyası oluşturularak container başlatılırken:
+
+```powershell
+--env-file .env
+```
+
+parametresi kullanıldı.
+
+---
+
+## Problem 6 — Servis çağrısı handlerı yanlış serviste oluşturuldu
+
+`call-service-b.handler.ts` ilk olarak Service B içinde oluşturuldu.
+
+Doğru konum:
+
+```text
+services/service-a/src/handlers/call-service-b.handler.ts
+```
+
+olarak düzeltildi.
+
+---

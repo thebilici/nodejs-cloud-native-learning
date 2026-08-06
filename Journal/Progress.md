@@ -156,22 +156,41 @@ Aşama 4 — Service A mimarisini tamamlama ve Docker aşamasına hazırlanma.
 - Container silinse bile image'ın yerel sistemde kalmaya devam ettiği öğrenildi.
 - Service A'nın Node.js geliştirme ortamından bağımsız olarak container içinde çalıştığı doğrulandı.
 
-## Sıradaki teknik aşama
+### Aşama 6 — Docker Network ve servisler arası iletişim
 
-Aşama 6 — Docker Network
+- Docker network türleri incelendi.
+- `cloud-native-network` adlı custom bridge network oluşturuldu.
+- Service A container'ı custom network'e bağlandı.
+- Docker DNS ve container name resolution mantığı öğrenildi.
+- Container içindeki `localhost` adresinin container'ın kendisini ifade ettiği öğrenildi.
+- Geçici curl container'ı ile container adı üzerinden erişim test edildi.
+- Service B Node.js, TypeScript ve Express ile oluşturuldu.
+- Service B için `health` ve `hello` endpoint'leri geliştirildi.
+- Service B için Dockerfile ve `.dockerignore` oluşturuldu.
+- `service-b:1.0` image'ı oluşturuldu.
+- Service B container olarak çalıştırıldı.
+- Service A ve Service B aynı Docker network'e bağlandı.
+- Service A'ya `call-service-b` handler'ı eklendi.
+- Node.js `fetch()` API'si ile Service A'dan Service B'ye HTTP isteği gönderildi.
+- `SERVICE_B_URL` environment variable olarak tanımlandı.
+- Service A image'ı `service-a:1.1` olarak yeniden oluşturuldu.
+- Servisler arası iletişim başarıyla doğrulandı.
+- Değişiklikler commit edilip GitHub'a gönderildi.
+
+## Sıradaki aşama
+
+Aşama 7 — Docker Compose
 
 Bu aşamada:
 
-- Docker network kavramı öğrenilecek.
-- Varsayılan Docker network türleri incelenecek.
-- Bridge network mantığı öğrenilecek.
-- Özel bir Docker network oluşturulacak.
-- Container'ların aynı network üzerinde birbirini nasıl bulduğu incelenecek.
-- Container adıyla servis keşfi mantığı öğrenilecek.
-- `localhost` adresinin container içindeki anlamı incelenecek.
-- Service A ve ileride oluşturulacak Service B arasındaki iletişim için temel hazırlanacak.
-- Docker Compose'un otomatik network oluşturma davranışına hazırlık yapılacak.
-
+- Compose dosya yapısı öğrenilecek.
+- Service A ve Service B tek Compose projesinde tanımlanacak.
+- Image build ayarları Compose'a taşınacak.
+- Port mapping Compose üzerinden yapılacak.
+- Environment variable tanımları Compose üzerinden yönetilecek.
+- Compose tarafından otomatik oluşturulan network incelenecek.
+- Servis adıyla DNS çözümlemesi öğrenilecek.
+- `docker compose up` ve `docker compose down` kullanılacak.
 ## Güncel Service A mimarisi
 
 ```text
