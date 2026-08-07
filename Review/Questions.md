@@ -387,3 +387,203 @@ Sorulara önce kendi cümlelerimle cevap vermeliyim. Cevabı hatırlayamazsam il
 ---
 
 ## 40. Bu projede şimdiye kadar öğrendiğin en önemli Docker kavramları nelerdir?
+# Docker Compose Questions
+
+## Docker Compose nedir ve Docker'dan farkı nedir?
+
+---
+
+## Docker Compose neden kullanılır?
+
+---
+
+## `compose.yaml` dosyasının temel amacı nedir?
+
+---
+
+## `services:` bölümü neyi ifade eder?
+
+---
+
+## Compose service name nedir?
+
+---
+
+## Service A neden Service B'ye `service-b:3001` adresiyle ulaşır?
+
+---
+
+## Neden `localhost:3001` yerine `service-b:3001` kullanıyoruz?
+
+---
+
+## Host bilgisayardan Service B'ye nasıl erişilir?
+
+---
+
+## Host-to-container ve container-to-container iletişimi arasındaki fark nedir?
+
+---
+
+## `build.context` ne işe yarar?
+
+---
+
+## Docker build context nedir?
+
+---
+
+## `ports` ne işe yarar?
+
+---
+
+## `"3000:3000"` ifadesinde soldaki ve sağdaki port neyi ifade eder?
+
+---
+
+## Service B'nin portunu publish etmek neden geliştirme ortamında faydalıdır?
+
+---
+
+## Container-to-container iletişim için port publish etmek zorunlu mudur?
+
+---
+
+## `env_file` ne işe yarar?
+
+---
+
+## `environment` ne işe yarar?
+
+---
+
+## `env_file` ile `environment` arasındaki fark nedir?
+
+---
+
+## `env_file` ve `environment` aynı environment variable'ı tanımlarsa hangisi kullanılır?
+
+---
+
+## Service A'da neden `SERVICE_B_URL` environment variable olarak tanımlandı?
+
+---
+
+## Docker Compose neden otomatik network oluşturur?
+
+---
+
+## Docker DNS nedir?
+
+---
+
+## Compose içinde neden IP adresi yerine service name kullanılır?
+
+---
+
+## `docker compose config` komutu ne işe yarar?
+
+---
+
+## `docker compose config` neden `docker compose up` öncesinde kullanılabilir?
+
+---
+
+## `docker compose up --build` ne yapar?
+
+---
+
+## `docker compose ps` ile `docker ps` arasındaki fark nedir?
+
+---
+
+## `docker compose logs` ne işe yarar?
+
+---
+
+## `docker compose down` ne yapar?
+
+---
+
+## Healthcheck nedir ve neden kullanılır?
+
+---
+
+## Container'ın `Up` olması uygulamanın sağlıklı olduğu anlamına gelir mi? Neden?
+
+---
+
+## Healthcheck neden `localhost:3001` adresini kullanır?
+
+---
+
+## Healthcheck içindeki `process.exit(1)` neyi ifade eder?
+
+---
+
+## `interval` parametresi ne işe yarar?
+
+---
+
+## `timeout` parametresi ne işe yarar?
+
+---
+
+## `retries` parametresi ne işe yarar?
+
+---
+
+## `start_period` parametresi ne işe yarar?
+
+---
+
+## `depends_on` ne işe yarar?
+
+---
+
+## Basit `depends_on` ile `condition: service_healthy` arasındaki fark nedir?
+
+---
+
+## Bizim Compose mimarimizde Service A neden Service B'ye bağımlıdır?
+
+---
+
+## Service B hiç ayağa kalkmazsa Service A neden başlamaz?
+
+---
+
+## Service B sonradan çökerse Service A otomatik olarak durur mu? Neden?
+
+---
+
+## `docker network inspect` komutu ne işe yarar?
+
+---
+
+## Compose'un oluşturduğu default network neden önemlidir?
+
+---
+
+## Compose neden her proje için ayrı bir network oluşturur?
+
+---
+
+## Service A → Service B isteğinin tam akışını adım adım anlatınız.
+
+---
+
+## `SERVICE_B_URL` değerini neden kaynak kod içine yazmadık?
+
+---
+
+## Docker Compose'da startup ordering nedir?
+
+---
+
+## Startup dependency ile runtime dependency arasındaki fark nedir?
+
+---
+
+## Bu projede Docker Compose kullanırken öğrendiğiniz en önemli mimari prensipler nelerdir?
+```

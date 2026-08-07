@@ -4,7 +4,7 @@ Bu dosya, projenin güncel ilerleme durumunu takip eder.
 
 ## Mevcut aşama
 
-Aşama 4 — Service A mimarisini tamamlama ve Docker aşamasına hazırlanma.
+Aşama 8 — k6 ile Load Testing hazırlığı
 
 ## Tamamlanan aşamalar
 
@@ -13,6 +13,8 @@ Aşama 4 — Service A mimarisini tamamlama ve Docker aşamasına hazırlanma.
 - Aşama 3 — Node.js ve TypeScript servis başlangıcı
 - Aşama 4 — Service A mimarisini oluşturma
 - Aşama 5 — Service A'yı Docker container içinde çalıştırma
+-  Aşama 6 — Docker Network ve servisler arası iletişim
+- Aşama 7 — Docker Compose
 
 ## Tamamlanan adımlar
 
@@ -177,20 +179,49 @@ Aşama 4 — Service A mimarisini tamamlama ve Docker aşamasına hazırlanma.
 - Servisler arası iletişim başarıyla doğrulandı.
 - Değişiklikler commit edilip GitHub'a gönderildi.
 
+### Aşama 7 — Docker Compose
+
+- Repository kökünde `compose.yaml` oluşturuldu.
+- Service A ve Service B aynı Compose projesinde tanımlandı.
+- `build.context` kullanılarak iki servis için image build süreci Compose'a taşındı.
+- `ports` tanımları Compose üzerinden yönetildi.
+- `env_file` ile runtime environment variable'ları yüklendi.
+- `environment` kullanılarak `SERVICE_B_URL` değeri Compose ortamı için override edildi.
+- Service A'nın Compose içinde Service B'ye `http://service-b:3001` adresi üzerinden ulaşması sağlandı.
+- Docker Compose Service Name ve Docker DNS mantığı öğrenildi.
+- Compose tarafından otomatik oluşturulan default network incelendi.
+- `docker compose config` ile Compose dosyası doğrulandı.
+- `docker compose up --build` ile image build ve container oluşturma süreci uygulandı.
+- `docker compose ps` ile Compose servisleri doğrulandı.
+- `docker compose logs` ile servis logları incelendi.
+- `/health`, `/hello` ve `/call-service-b` endpointleri Compose ortamında başarıyla test edildi.
+- `docker network inspect` ile Compose network yapısı incelendi.
+- `docker compose down` ile Compose kaynaklarının kaldırılması öğrenildi.
+- Service B için Docker Healthcheck eklendi.
+- Healthcheck mekanizmasının çalışma mantığı öğrenildi.
+- `docker compose ps` üzerinden `(healthy)` durumu doğrulandı.
+- `depends_on` ve `condition: service_healthy` kullanılarak startup dependency oluşturuldu.
+- Container'ın başlaması ile uygulamanın hazır olması arasındaki fark öğrenildi.
+- Compose startup ordering mantığı uygulamalı olarak doğrulandı.
+
+
 ## Sıradaki aşama
 
-Aşama 7 — Docker Compose
+## Sıradaki aşama
+
+Aşama 8 — k6 Load Testing
 
 Bu aşamada:
 
-- Compose dosya yapısı öğrenilecek.
-- Service A ve Service B tek Compose projesinde tanımlanacak.
-- Image build ayarları Compose'a taşınacak.
-- Port mapping Compose üzerinden yapılacak.
-- Environment variable tanımları Compose üzerinden yönetilecek.
-- Compose tarafından otomatik oluşturulan network incelenecek.
-- Servis adıyla DNS çözümlemesi öğrenilecek.
-- `docker compose up` ve `docker compose down` kullanılacak.
+- k6 kurulacak.
+- İlk load test senaryosu hazırlanacak.
+- Virtual User (VU) mantığı öğrenilecek.
+- Constant load ve ramping load testleri uygulanacak.
+- `/work` endpoint'i üzerinde CPU yükü oluşturulacak.
+- Docker Compose ortamında iki servis yük altında test edilecek.
+- Response time, throughput ve failure rate metrikleri incelenecek.
+- Kubernetes ve HPA öncesi temel performans analizi yapılacak.
+
 ## Güncel Service A mimarisi
 
 ```text

@@ -1739,6 +1739,157 @@ Container'ı sistemden siler.
 Hayır. Image sistemde kalmaya devam eder ve tekrar yeni container oluşturmak için kullanılabilir.
 
 ---
+
+# Docker Compose Flashcards
+
+## Docker Compose nedir?
+Birden fazla container tabanlı servisi tek bir YAML dosyası üzerinden tanımlamayı ve birlikte yönetmeyi sağlar.
+
+---
+
+## Docker Compose neden kullanılır?
+Birden fazla servisi tek komutla build etmek, çalıştırmak, durdurmak ve yönetmek için kullanılır.
+
+---
+
+## `compose.yaml` dosyasının görevi nedir?
+Servislerin nasıl build edileceğini, çalıştırılacağını ve birbirleriyle nasıl iletişim kuracağını tanımlar.
+
+---
+
+## `services:` neyi ifade eder?
+Docker Compose tarafından yönetilecek servislerin tanımlandığı ana bölümdür.
+
+---
+
+## Compose service name nedir?
+`service-a` ve `service-b` gibi servis isimleridir.
+
+---
+
+## Compose service name neden önemlidir?
+Aynı Compose network içindeki servisler birbirlerine bu isimlerle ulaşabilir.
+
+---
+
+## Service A, Service B'ye Compose içinde hangi adresle ulaşır?
+`http://service-b:3001`
+
+---
+
+## Service A neden `localhost:3001` kullanmaz?
+Çünkü container içindeki `localhost` yalnızca o container'ı ifade eder.
+
+---
+
+## Host bilgisayardan Service B'ye hangi adresle ulaşılır?
+`http://localhost:3001`
+
+---
+
+## Host ile container aynı network perspektifine sahip midir?
+Hayır. Host ve container farklı network ortamlarında çalışır.
+
+---
+
+## `build.context` ne işe yarar?
+Docker build sırasında kullanılacak build context klasörünü belirtir.
+
+---
+
+## `ports` ne işe yarar?
+Container portunu host makine üzerinde yayınlar (publish eder).
+
+---
+
+## `"3000:3000"` ifadesinde soldaki port neyi ifade eder?
+Host portunu.
+
+---
+
+## `"3000:3000"` ifadesinde sağdaki port neyi ifade eder?
+Container portunu.
+
+---
+
+## Service B için port publish etmek Service A'nın ona ulaşması için zorunlu mudur?
+Hayır. Aynı Compose network içinde servisler birbirlerine doğrudan ulaşabilir.
+
+---
+
+## `env_file` ne işe yarar?
+Environment variable değerlerini dosyadan yükler.
+
+---
+
+## `environment` ne işe yarar?
+Environment variable tanımlar veya mevcut değerleri override eder.
+
+---
+
+## `env_file` ile `environment` aynı değişkeni tanımlarsa hangisi geçerli olur?
+`environment` altında verilen değer geçerli olur.
+
+---
+
+## Service A'da neden `SERVICE_B_URL` override edildi?
+Compose ortamında Service B'nin adresi `service-b` olduğu için.
+
+---
+
+## Docker Compose neden otomatik network oluşturur?
+Servislerin aynı ağ üzerinde haberleşebilmesini sağlamak için.
+
+---
+
+## Compose'un oluşturduğu varsayılan network adı nasıl oluşur?
+`<project-name>_default`
+
+---
+
+## Docker DNS ne işe yarar?
+Service name'leri ilgili container IP adreslerine çözer.
+
+---
+
+## Neden container IP adresini kullanmıyoruz?
+Container IP adresi değişebilir. Service name daha stabildir.
+
+---
+
+## `docker compose config` ne işe yarar?
+Compose dosyasını doğrular ve Docker Compose'un yorumladığı son yapılandırmayı gösterir.
+
+---
+
+## `docker compose config` container oluşturur mu?
+Hayır.
+
+---
+
+## `docker compose up --build` ne yapar?
+Image'ları build eder ve servisleri çalıştırır.
+
+---
+
+## `docker compose ps` ne gösterir?
+Yalnızca ilgili Compose projesine ait container'ları gösterir.
+
+---
+
+## `docker compose logs` ne işe yarar?
+Compose servislerinin loglarını gösterir.
+
+---
+
+## Healthcheck ne işe yarar?
+Container içindeki uygulamanın gerçekten çalışıp çalışmadığını kontrol eder.
+
+---
+
+## `depends_on` ve `condition: service_healthy` birlikte ne sağlar?
+Service B healthy olmadan Service A'nın başlamasını engeller.
+
 # Tekrar Edilecek Kartlar
 
 Yanlış veya eksik cevaplanan kartlar konu başlıklarına göre bu bölüme eklenecektir.
