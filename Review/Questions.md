@@ -587,3 +587,132 @@ Sorulara önce kendi cümlelerimle cevap vermeliyim. Cevabı hatırlayamazsam il
 
 ## Bu projede Docker Compose kullanırken öğrendiğiniz en önemli mimari prensipler nelerdir?
 ```
+
+# Questions — k6 Load Testing & Performance Analysis
+
+## Soru 1
+Virtual User (VU) nedir ve gerçek kullanıcıyı nasıl simüle eder?
+
+---
+
+## Soru 2
+Iteration nedir ve VU ile arasındaki fark nedir?
+
+---
+
+## Soru 3
+Throughput nedir? Hangi birim ile ifade edilir?
+
+---
+
+## Soru 4
+Latency nedir?
+
+---
+
+## Soru 5
+Average, Median ve P95 metrikleri arasındaki fark nedir?
+
+---
+
+## Soru 6
+Neden yalnızca average response time değerine bakmak doğru değildir?
+
+---
+
+## Soru 7
+`http_req_failed` metriği neyi ifade eder?
+
+---
+
+## Soru 8
+`check()` ile `threshold` arasındaki temel fark nedir?
+
+---
+
+## Soru 9
+Aşağıdaki threshold neyi ifade eder?
+
+```text
+http_req_duration: ["p(95)<2000"]
+```
+
+---
+
+## Soru 10
+Load Test ile Stress Test arasındaki temel fark nedir?
+
+---
+
+## Soru 11
+`stages` yapısı ne işe yarar?
+
+---
+
+## Soru 12
+`/hello` endpoint'i ile `/work` endpoint'i neden farklı performans sonuçları üretmiştir?
+
+---
+
+## Soru 13
+CPU-bound workload Node.js Event Loop'u nasıl etkiler?
+
+---
+
+## Soru 14
+k6 ile `/work` endpoint'inin görevleri arasındaki fark nedir?
+
+---
+
+## Soru 15
+Saturation nedir?
+
+---
+
+## Soru 16
+Bir sistemin saturation durumuna girdiğini hangi metriklerden anlayabiliriz?
+
+---
+
+## Soru 17
+VU sayısı artmasına rağmen throughput neden yaklaşık aynı kaldı?
+
+---
+
+## Soru 18
+Throughput aynı kalırken latency neden yükseldi?
+
+---
+
+## Soru 19
+Request'ler kuyrukta beklediği halde neden `http_req_failed = 0%` sonucu görüldü?
+
+---
+
+## Soru 20
+Capacity Test'in amacı nedir?
+
+---
+
+## Soru 21
+`__ENV.VUS` kullanılmasının avantajı nedir?
+
+---
+
+## Soru 22
+Configuration over Code yaklaşımı nedir ve bu projede nasıl uygulandı?
+
+---
+
+## Soru 23
+Yapılan Capacity Test sonucunda Service A'nın yaklaşık maksimum throughput'u kaç req/s olarak gözlemlendi?
+
+---
+
+## Soru 24
+Yapılan Capacity Test sonucuna göre saturation yaklaşık hangi concurrency seviyesinde görülmeye başlandı?
+
+---
+
+## Soru 25
+Bu performans analizinin Kubernetes Horizontal Pod Autoscaler (HPA) aşaması için neden önemli olduğunu açıklayın.

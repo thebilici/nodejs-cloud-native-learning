@@ -4,7 +4,7 @@ Bu dosya, projenin güncel ilerleme durumunu takip eder.
 
 ## Mevcut aşama
 
-Aşama 8 — k6 ile Load Testing hazırlığı
+Aşama 8 — k6 Load Testing ve Capacity Analysis
 
 ## Tamamlanan aşamalar
 
@@ -203,24 +203,50 @@ Aşama 8 — k6 ile Load Testing hazırlığı
 - `depends_on` ve `condition: service_healthy` kullanılarak startup dependency oluşturuldu.
 - Container'ın başlaması ile uygulamanın hazır olması arasındaki fark öğrenildi.
 - Compose startup ordering mantığı uygulamalı olarak doğrulandı.
+### Aşama 8 — k6 Load Testing
+
+- k6 başarıyla kuruldu.
+- `service-a-hello.js` ile ilk load testi gerçekleştirildi.
+- Virtual User (VU) kavramı öğrenildi.
+- Iteration kavramı öğrenildi.
+- Throughput (req/s) metriği incelendi.
+- Latency kavramı öğrenildi.
+- `avg`, `median`, `p90` ve `p95` metrikleri yorumlandı.
+- `http_req_failed` metriği incelendi.
+- `check()` fonksiyonu kullanılarak response doğrulamaları eklendi.
+- `threshold` kullanılarak performans kabul kriterleri tanımlandı.
+- `/hello` endpoint'i ile `/work` endpoint'i performans açısından karşılaştırıldı.
+- CPU-bound workload'un Node.js Event Loop üzerindeki etkisi gözlemlendi.
+- Constant Load Test gerçekleştirildi.
+- Stress Test için `stages` yapısı kullanıldı.
+- Kademeli VU artışının sistem üzerindeki etkisi incelendi.
+- Stress Test sonucunda throughput'un yaklaşık aynı kalırken latency'nin ciddi şekilde arttığı gözlemlendi.
+- Saturation (doygunluk) kavramı uygulamalı olarak öğrenildi.
+- Capacity Test senaryosu oluşturuldu.
+- `__ENV.VUS` kullanılarak aynı test dosyasının farklı concurrency seviyelerinde çalıştırılması sağlandı.
+- Configuration over Code yaklaşımı test senaryolarında uygulandı.
+- 1, 2, 3, 4, 5, 10, 20, 40 ve 80 VU seviyelerinde kapasite ölçümleri gerçekleştirildi.
+- Service A'nın yaklaşık 10 req/s işleme kapasitesine sahip olduğu gözlemlendi.
+- VU arttıkça throughput'un plato yaptığı, latency'nin ise kuyruk oluşumu nedeniyle yükseldiği doğrulandı.
+- Kubernetes Horizontal Pod Autoscaler öncesi kapasite analizi tamamlandı.
 
 
 ## Sıradaki aşama
 
 ## Sıradaki aşama
 
-Aşama 8 — k6 Load Testing
+Aşama 9 — Kubernetes
 
-Bu aşamada:
+Bu aşamada;
 
-- k6 kurulacak.
-- İlk load test senaryosu hazırlanacak.
-- Virtual User (VU) mantığı öğrenilecek.
-- Constant load ve ramping load testleri uygulanacak.
-- `/work` endpoint'i üzerinde CPU yükü oluşturulacak.
-- Docker Compose ortamında iki servis yük altında test edilecek.
-- Response time, throughput ve failure rate metrikleri incelenecek.
-- Kubernetes ve HPA öncesi temel performans analizi yapılacak.
+- Kind Kubernetes Cluster kurulacak.
+- Service A ve Service B Kubernetes Deployment olarak çalıştırılacak.
+- Kubernetes Service yapısı oluşturulacak.
+- Docker Compose ile Kubernetes arasındaki farklar incelenecek.
+- Pod kavramı öğrenilecek.
+- Replica mantığı öğrenilecek.
+- Kubernetes iç ağ yapısı incelenecek.
+- Daha sonra Metrics Server ve Horizontal Pod Autoscaler kurulacak.
 
 ## Güncel Service A mimarisi
 
@@ -233,6 +259,7 @@ services/
     │   │   ├── health.handler.ts
     │   │   ├── hello.handler.ts
     │   │   └── work.handler.ts
+            └──call-service-b.handler.ts   
     │   ├── routes/
     │   │   └── index.ts
     │   ├── workload/
@@ -271,3 +298,16 @@ Metrics Server
 Horizontal Pod Autoscaler
 
 çalışmalarında kullanılacaktır.
+
+
+##Performans Analizi Özeti
+
+Capacity Test sonuçlarına göre;
+
+- `/work` endpoint'i CPU-bound bir iş yükü üretmektedir.
+- Tek bir Node.js instance yaklaşık 10 request/s işleyebilmektedir.
+- Virtual User sayısı arttıkça throughput yaklaşık aynı seviyede kalmıştır.
+- Concurrency arttıkça latency belirgin şekilde yükselmiştir.
+- Request'ler başarısız olmamış ancak kuyrukta bekledikleri için response süreleri uzamıştır.
+- Bu davranış Node.js Event Loop üzerinde CPU-bound işlemlerin oluşturduğu saturation etkisini göstermektedir.
+- Bu analiz Kubernetes Horizontal Pod Autoscaler çalışmalarının temelini oluşturmaktadır.

@@ -872,6 +872,30 @@ Horizontal Pod Autoscaler
 çalışmalarının temelini oluşturacaktır.
 
 ---
+## Benchmark Results
+
+| VU | Req/s |    Avg |     P95 |
+| -: | ----: | -----: | ------: |
+|  1 |  9.57 | 104 ms |  106 ms |
+|  2 |  9.89 | 200 ms |  204 ms |
+|  3 |  9.86 | 300 ms |  415 ms |
+|  4 |  9.86 | 399 ms |  615 ms |
+|  5 |  9.84 | 497 ms |  812 ms |
+| 10 |  9.85 | 967 ms |  1.82 s |
+| 20 |  9.73 | 1.88 s |  9.74 s |
+| 40 |  9.82 | 3.48 s | 13.21 s |
+| 80 |  9.84 | 6.30 s | 17.12 s |
+
+## Capacity Analysis
+
+Gerçekleştirilen testler sonucunda aşağıdaki gözlemler elde edilmiştir.
+
+- Service A yaklaşık **10 request/s** işleyebilmektedir.
+- Virtual User sayısı artırıldığında throughput önemli ölçüde artmamıştır.
+- Throughput yaklaşık aynı seviyede kalırken latency sürekli yükselmiştir.
+- Bunun nedeni Node.js'in CPU-bound workload'u tek Event Loop üzerinde işlemesidir.
+- Ek concurrency yeni throughput üretmek yerine request'lerin daha uzun süre beklemesine neden olmuştur.
+- Bu davranış sistemin saturation (doygunluk) noktasına ulaştığını göstermektedir.
 
 # Repository
 

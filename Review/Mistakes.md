@@ -818,3 +818,187 @@ docker compose ps
 
 ### Çıkarılan ders
 Compose komutları çoğunlukla project scope içinde çalışır.
+
+# Mistakes — k6 Load Testing & Performance Analysis
+
+## Hata 1 — Virtual User sayısını toplam request sayısı sanmak
+
+### Yanlış düşünce
+10 VU varsa toplam 10 request gönderileceği düşünülebilir.
+
+### Doğru bilgi
+VU, eşzamanlı çalışan sanal kullanıcı sayısını ifade eder.
+
+Her VU test süresi boyunca birden fazla iteration çalıştırabilir.
+
+### Çıkarılan ders
+VU sayısı ile toplam request sayısı aynı şey değildir.
+
+---
+
+## Hata 2 — Iteration ile request kavramını aynı sanmak
+
+### Yanlış düşünce
+Bir iteration her zaman bir request demektir.
+
+### Doğru bilgi
+Bir iteration içinde bir veya birden fazla HTTP request bulunabilir.
+
+### Çıkarılan ders
+Iteration, test fonksiyonunun bir kez tamamlanmasıdır; request sayısı ise iteration içindeki HTTP çağrılarına bağlıdır.
+
+---
+
+## Hata 3 — Yalnızca average latency değerine bakmak
+
+### Yanlış düşünce
+Average düşükse sistem performansı iyidir.
+
+### Doğru bilgi
+Average, yavaş requestleri gizleyebilir.
+
+Bu yüzden:
+
+- median
+- p90
+- p95
+- max
+
+değerleri de değerlendirilmelidir.
+
+### Çıkarılan ders
+Performans analizinde percentile metrikleri average kadar önemlidir.
+
+---
+
+## Hata 4 — `http_req_failed = 0%` değerini iyi performans olarak yorumlamak
+
+### Yanlış düşünce
+Hiç request fail olmadıysa servis iyi çalışıyordur.
+
+### Doğru bilgi
+Requestler başarılı olabilir fakat response süreleri çok yüksek olabilir.
+
+Örneğin stress testte:
+
+```text
+http_req_failed = 0%
+p95 ≈ 24s
+```
+
+gözlemlendi.
+
+### Çıkarılan ders
+Availability ve correctness, performance ile aynı kavram değildir.
+
+---
+
+## Hata 5 — HTTP 200 response'un tek başına yeterli olduğunu düşünmek
+
+### Yanlış düşünce
+Bütün requestler `200 OK` dönüyorsa test başarılıdır.
+
+### Doğru bilgi
+Functional olarak başarılı olsa bile performance threshold başarısız olabilir.
+
+### Çıkarılan ders
+Başarılı response ile kabul edilebilir performans ayrı ayrı değerlendirilmelidir.
+
+---
+
+## Hata 6 — `check()` ile `threshold` kavramlarını karıştırmak
+
+### Yanlış düşünce
+`check()` ve `threshold` aynı işi yapar.
+
+### Doğru bilgi
+`check()` tek tek response'ları doğrular.
+
+`threshold` ise testin genel performans kabul kriterini belirler.
+
+### Çıkarılan ders
+Functional validation ve performance validation ayrı mekanizmalardır.
+
+---
+
+## Hata 7 — Stress Test ile Load Test'i aynı amaçla kullanmak
+
+### Yanlış düşünce
+İki test de sadece sisteme çok sayıda request göndermek için yapılır.
+
+### Doğru bilgi
+Load Test normal beklenen yük altındaki performansı ölçer.
+
+Stress Test ise sistemin kapasite sınırını ve kırılma davranışını bulmaya çalışır.
+
+### Çıkarılan ders
+Test türü, ölçülmek istenen probleme göre seçilmelidir.
+
+---
+
+## Hata 8 — VU sayısı arttıkça throughput'un mutlaka artacağını düşünmek
+
+### Yanlış düşünce
+Daha fazla VU verilirse sistem daha fazla request/s işler.
+
+### Doğru bilgi
+Sistem kapasitesine ulaştığında throughput plato yapar.
+
+Bizim testlerde:
+
+```text
+1 VU  → ~9.57 req/s
+5 VU  → ~9.84 req/s
+10 VU → ~9.85 req/s
+20 VU → ~9.74 req/s
+40 VU → ~9.82 req/s
+80 VU → ~9.84 req/s
+```
+
+gözlemlendi.
+
+### Çıkarılan ders
+Concurrency artışı her zaman throughput artışı üretmez.
+
+---
+
+## Hata 9 — Daha uzun test süresinin throughput'u artıracağını düşünmek
+
+### Yanlış düşünce
+Test daha uzun sürdüğü için req/s değeri de daha yüksek olmalıdır.
+
+### Doğru bilgi
+Daha uzun test daha fazla toplam request üretir fakat throughput birim zamandaki tamamlanan request sayısıdır.
+
+### Çıkarılan ders
+Toplam request ile req/s aynı metrik değildir.
+
+---
+
+## Hata 10 — Kuyrukta bekleyen requestlerin cevaplanmadığını düşünmek
+
+### Yanlış düşünce
+Latency yükseldiyse requestler artık cevaplanmıyordur.
+
+### Doğru bilgi
+Requestler geç de olsa cevaplanabilir.
+
+Bizim stress testimizde tüm tamamlanan requestler başarılı response aldı ancak bazı requestler çok uzun süre bekledi.
+
+### Çıkarılan ders
+Yüksek latency, request failure anlamına gelmez.
+
+---
+
+## Hata 11 — "Queue" kavramını gerçek bir Queue veri yapısı sanmak
+
+### Yanlış düşünce
+Uygulamada özel bir queue sistemi olduğu düşünülebilir.
+
+### Doğru bilgi
+Burada queueing kavramsal olarak requestlerin socket, runtime ve Event Loop çevresinde işlem sırası beklemesini ifade eder.
+
+### Çıkarılan ders
+Performans analizindeki queueing her zaman RabbitMQ veya gerçek bir queue veri yapısı anlamına gelmez.
+
+---

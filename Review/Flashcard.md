@@ -1890,6 +1890,211 @@ Container içindeki uygulamanın gerçekten çalışıp çalışmadığını kon
 ## `depends_on` ve `condition: service_healthy` birlikte ne sağlar?
 Service B healthy olmadan Service A'nın başlamasını engeller.
 
+
+# Flashcards — k6 Load Testing & Performance Analysis
+
+## Soru 1
+Virtual User (VU) nedir?
+
+Cevap:
+Gerçek bir kullanıcıyı simüle eden sanal kullanıcıdır. Her VU kendi iteration döngüsünü bağımsız olarak çalıştırır.
+
+---
+
+## Soru 2
+Iteration nedir?
+
+Cevap:
+Bir Virtual User'ın test senaryosunu baştan sona bir kez çalıştırmasıdır.
+
+---
+
+## Soru 3
+Throughput neyi ifade eder?
+
+Cevap:
+Sistemin bir saniyede başarıyla tamamladığı request sayısını ifade eder ve genellikle req/s olarak gösterilir.
+
+---
+
+## Soru 4
+Latency nedir?
+
+Cevap:
+Bir request'in gönderilmesi ile cevabının alınması arasında geçen toplam süredir.
+
+---
+
+## Soru 5
+Neden yalnızca average latency'ye bakılmaz?
+
+Cevap:
+Çünkü ortalama değer uzun süren requestleri gizleyebilir. Bu nedenle p90 ve p95 gibi percentile değerleri de incelenir.
+
+---
+
+## Soru 6
+p95 değeri neyi ifade eder?
+
+Cevap:
+Requestlerin %95'inin bu süreden daha kısa sürede tamamlandığını gösterir.
+
+---
+
+## Soru 7
+Median ile average arasındaki fark nedir?
+
+Cevap:
+Median ortadaki değeri gösterirken average tüm değerlerin ortalamasını alır ve uç değerlerden daha fazla etkilenir.
+
+---
+
+## Soru 8
+http_req_failed metriği neyi gösterir?
+
+Cevap:
+Başarısız HTTP request oranını gösterir.
+
+---
+
+## Soru 9
+check() fonksiyonunun amacı nedir?
+
+Cevap:
+Response'un beklenen koşulları sağlayıp sağlamadığını doğrular.
+
+---
+
+## Soru 10
+Threshold nedir?
+
+Cevap:
+Test sırasında sağlanması gereken performans kabul kriteridir.
+
+---
+
+## Soru 11
+Aşağıdaki threshold neyi ifade eder?
+
+http_req_duration: ["p(95)<2000"]
+
+Cevap:
+Requestlerin %95'i 2 saniyeden kısa sürmelidir.
+
+---
+
+## Soru 12
+Load Test'in amacı nedir?
+
+Cevap:
+Sistemin beklenen normal kullanıcı yükü altındaki performansını ölçmektir.
+
+---
+
+## Soru 13
+Stress Test'in amacı nedir?
+
+Cevap:
+Sistemin kapasite sınırını ve saturation noktasını belirlemektir.
+
+---
+
+## Soru 14
+stages yapısı ne için kullanılır?
+
+Cevap:
+Virtual User sayısını zaman içerisinde kademeli olarak artırmak veya azaltmak için kullanılır.
+
+---
+
+## Soru 15
+Aşağıdaki stages neyi ifade eder?
+
+10 → 50 → 100 → 0
+
+Cevap:
+Yük zamanla artırılır ve test sonunda kontrollü şekilde azaltılır.
+
+---
+
+## Soru 16
+Saturation nedir?
+
+Cevap:
+Sistemin kapasitesine ulaşıp throughput artmazken latency'nin yükselmeye başladığı durumdur.
+
+---
+
+## Soru 17
+Saturation'ın en önemli göstergesi nedir?
+
+Cevap:
+Throughput'un plato yapması, buna karşılık latency'nin artmaya devam etmesidir.
+
+---
+
+## Soru 18
+Bizim Capacity Test sonucunda yaklaşık maksimum throughput kaç req/s olarak gözlemlendi?
+
+Cevap:
+Yaklaşık 10 req/s.
+
+---
+
+## Soru 19
+VU sayısı artmasına rağmen throughput neden artmadı?
+
+Cevap:
+Çünkü Service A kapasitesine ulaştı. Yeni requestler daha hızlı işlenmek yerine beklemeye başladı.
+
+---
+
+## Soru 20
+VU sayısı arttığında latency neden yükseldi?
+
+Cevap:
+CPU-bound işlemler nedeniyle requestler sırada bekledi ve bekleme süresi toplam response süresine eklendi.
+
+---
+
+## Soru 21
+/work endpoint'i neden /hello endpoint'inden daha yavaştır?
+
+Cevap:
+Çünkü CPU-bound workload çalıştırarak işlemci üzerinde yoğun işlem gerçekleştirir.
+
+---
+
+## Soru 22
+Capacity Test'in amacı nedir?
+
+Cevap:
+Farklı concurrency seviyelerinde sistemin gerçek kapasitesini ve saturation bölgesini belirlemektir.
+
+---
+
+## Soru 23
+__ENV.VUS kullanmanın avantajı nedir?
+
+Cevap:
+Kodu değiştirmeden aynı test dosyasını farklı Virtual User değerleriyle çalıştırabilmeyi sağlar.
+
+---
+
+## Soru 24
+"Configuration over Code" yaklaşımı neyi ifade eder?
+
+Cevap:
+Davranışı kodu değiştirerek değil, dışarıdan verilen konfigürasyon ile değiştirmeyi ifade eder.
+
+---
+
+## Soru 25
+Bu performans analizinin Kubernetes tarafındaki temel amacı nedir?
+
+Cevap:
+Tek pod'un kapasitesini ölçerek HPA ve pod ölçeklendirmesinin throughput ile latency üzerindeki etkisini karşılaştırabilmektir.
+
 # Tekrar Edilecek Kartlar
 
 Yanlış veya eksik cevaplanan kartlar konu başlıklarına göre bu bölüme eklenecektir.

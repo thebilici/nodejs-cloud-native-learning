@@ -4,7 +4,7 @@
 
 ## Güncel Konum
 
-Aşama 8 — k6 Load Testing
+Aşama 9 — Kubernetes
 
 ```text
 Git ve GitHub ✅
@@ -25,20 +25,55 @@ Servisler Arası İletişim ✅
         ↓
 Docker Compose ✅
         ↓
-k6 ← Güncel Aşama
+k6 Load Testing ✅
         ↓
-Kubernetes
+Kubernetes ← Güncel Aşama
         ↓
 Metrics Server
         ↓
 Horizontal Pod Autoscaler
 ```
 
-## Bir Sonraki Hedef
+## Tamamlanan Aşama
+
+### Aşama 8 — k6 Load Testing
+
+Bu aşamada aşağıdaki konular tamamlandı:
 
 - k6 kurulumu
-- Load Testing
-- Stress Testing
-- Response Time analizi
-- CPU workload testi
-- Kubernetes öncesi performans ölçümü
+- Virtual User (VU) mantığı
+- Iteration kavramı
+- Throughput analizi
+- Latency analizi
+- Average, Median ve P95 metrikleri
+- HTTP request başarısızlık oranı analizi
+- `check()` kullanımı
+- `threshold` kullanımı
+- Load Test
+- Stress Test
+- Capacity Test
+- `stages` ile kademeli yük oluşturma
+- `__ENV.VUS` ile parametreleştirilmiş test senaryosu
+- Configuration over Code yaklaşımı
+- `/hello` ve `/work` endpoint performans karşılaştırması
+- CPU-bound workload analizi
+- Node.js Event Loop üzerindeki etkilerin incelenmesi
+- Saturation (doygunluk) analizi
+- Tek Service A instance kapasitesinin ölçülmesi
+- Kubernetes öncesi performans baseline'ının oluşturulması
+
+## Bir Sonraki Hedef
+
+### Aşama 9 — Kubernetes
+
+Bu aşamada;
+
+- Kind Kubernetes Cluster kurulacak.
+- Docker image'ları Kubernetes üzerinde çalıştırılacak.
+- Pod kavramı öğrenilecek.
+- Deployment oluşturulacak.
+- Kubernetes Service oluşturulacak.
+- Replica mantığı incelenecek.
+- Docker Compose ile Kubernetes mimarisi karşılaştırılacak.
+- Service A ve Service B Kubernetes ortamında haberleştirilecek.
+- Metrics Server kurulumu için ortam hazırlanacak.
