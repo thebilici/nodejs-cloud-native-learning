@@ -716,3 +716,205 @@ Yapılan Capacity Test sonucuna göre saturation yaklaşık hangi concurrency se
 
 ## Soru 25
 Bu performans analizinin Kubernetes Horizontal Pod Autoscaler (HPA) aşaması için neden önemli olduğunu açıklayın.
+
+
+# Kubernetes Review Questions — 20 Soru
+
+## 1
+
+Kubernetes'te Deployment'ın temel görevi nedir?
+
+---
+
+## 2
+
+Deployment, ReplicaSet, Pod ve Container arasındaki ilişkiyi sırasıyla açıkla.
+
+---
+
+## 3
+
+`replicas: 2` yazdığımızda Kubernetes'e tam olarak ne söylemiş oluyoruz?
+
+---
+
+## 4
+
+Deployment içerisindeki `selector.matchLabels` ne işe yarar ve Pod Template içerisindeki `labels` ile neden eşleşmelidir?
+
+---
+
+## 5
+
+Deployment selector ile Kubernetes Service selector arasındaki temel fark nedir?
+
+---
+
+## 6
+
+Kubernetes Service neden gereklidir? Neden doğrudan Pod IP adreslerini kullanmak istemeyiz?
+
+---
+
+## 7
+
+Kubernetes Service içerisindeki `port` ve `targetPort` arasındaki fark nedir?
+
+Örneğin aşağıdaki yapı nasıl çalışır?
+
+```yaml
+ports:
+  - port: 80
+    targetPort: 3000
+```
+
+---
+
+## 8
+
+Kubernetes Service Discovery nedir ve Kubernetes DNS bu yapıda nasıl bir görev üstlenir?
+
+---
+
+## 9
+
+Service A'nın Service B'ye:
+
+```text
+http://service-b:3001
+```
+
+adresi üzerinden ulaşabilmesini sağlayan Kubernetes yapısını baştan sona açıkla.
+
+---
+
+## 10
+
+`curl-test` Pod'unu neden oluşturduk? Bu Pod gerçek Service A → Service B mimarisinin bir parçası mıdır?
+
+---
+
+## 11
+
+Aşağıdaki isteğin cluster içerisinde izlediği yolu baştan sona açıkla:
+
+```text
+curl-test
+↓
+GET http://service-a:3000/call-service-b
+↓
+?
+↓
+Service B
+```
+
+---
+
+## 12
+
+Kubernetes'te rollout nedir?
+
+Deployment'ın Pod Template'i değiştirildiğinde ReplicaSet ve Pod'lar açısından neler gerçekleşir?
+
+---
+
+## 13
+
+Aşağıdaki komut ne işe yarar?
+
+```powershell
+kubectl rollout status deployment/service-a
+```
+
+Bu komut yeni bir rollout başlatır mı?
+
+---
+
+## 14
+
+ConfigMap nedir ve `SERVICE_B_URL` değerini doğrudan Deployment içerisine yazmak yerine ConfigMap'e taşımamızın amacı nedir?
+
+---
+
+## 15
+
+Aşağıdaki yapıyı satır satır açıklayabilir misin?
+
+```yaml
+env:
+  - name: SERVICE_B_URL
+    valueFrom:
+      configMapKeyRef:
+        name: service-a-config
+        key: SERVICE_B_URL
+```
+
+---
+
+## 16
+
+Aşağıdaki zincirde her adımın görevini açıkla:
+
+```text
+ConfigMap
+↓
+SERVICE_B_URL
+↓
+configMapKeyRef
+↓
+Container Environment Variable
+↓
+process.env.SERVICE_B_URL
+```
+
+---
+
+## 17
+
+ConfigMap içerisindeki `SERVICE_B_URL` değerini değiştirdik ve ConfigMap'i tekrar `apply` ettik.
+
+Çalışan Service A container'ı yeni environment variable değerini neden otomatik olarak kullanmaz?
+
+---
+
+## 18
+
+Readiness Probe nedir?
+
+Readiness Probe başarısız olduğunda:
+
+- Pod'a ne olur?
+- Container restart edilir mi?
+- Kubernetes Service bu Pod'a trafik göndermeye devam eder mi?
+
+---
+
+## 19
+
+Liveness Probe nedir?
+
+Liveness Probe arka arkaya belirlenen sayıda başarısız olduğunda Kubernetes'in container üzerinde gerçekleştirebileceği işlem nedir?
+
+---
+
+## 20
+
+Readiness Probe ile Liveness Probe arasındaki farkı kendi cümlelerinle açıkla.
+
+Aşağıdaki iki soruyu birbirinden ayır:
+
+```text
+Pod trafik almaya hazır mı?
+
+Container sağlıklı şekilde çalışmaya devam ediyor mu?
+```
+
+Son olarak şu yapıyı tamamla:
+
+```text
+Readiness başarısız
+→ ?
+
+Liveness sürekli başarısız
+→ ?
+```

@@ -9,4 +9,3 @@ const SERVICE_NAME = process.env.SERVICE_NAME || "service-a";
 app.listen(PORT, () => {
   console.log(`${SERVICE_NAME} is running on port ${PORT}`);
 });
-

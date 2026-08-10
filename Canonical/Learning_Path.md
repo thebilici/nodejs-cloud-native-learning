@@ -1,6 +1,6 @@
 # Canonical Roadmap
 
-**Son Güncelleme:** 2026-08-07
+**Son Güncelleme:** 2026-08-10
 
 ## Güncel Konum
 
@@ -38,42 +38,115 @@ Horizontal Pod Autoscaler
 
 ### Aşama 8 — k6 Load Testing
 
-Bu aşamada aşağıdaki konular tamamlandı:
+Tamamlanan ana konular:
 
-- k6 kurulumu
-- Virtual User (VU) mantığı
-- Iteration kavramı
-- Throughput analizi
-- Latency analizi
-- Average, Median ve P95 metrikleri
-- HTTP request başarısızlık oranı analizi
-- `check()` kullanımı
-- `threshold` kullanımı
-- Load Test
-- Stress Test
-- Capacity Test
-- `stages` ile kademeli yük oluşturma
-- `__ENV.VUS` ile parametreleştirilmiş test senaryosu
-- Configuration over Code yaklaşımı
-- `/hello` ve `/work` endpoint performans karşılaştırması
-- CPU-bound workload analizi
-- Node.js Event Loop üzerindeki etkilerin incelenmesi
-- Saturation (doygunluk) analizi
-- Tek Service A instance kapasitesinin ölçülmesi
-- Kubernetes öncesi performans baseline'ının oluşturulması
+* VU ve Iteration
+* Throughput ve Latency
+* Average, Median, P95
+* `check()` ve `threshold`
+* Load Test
+* Stress Test
+* Capacity Test
+* `stages`
+* `__ENV.VUS`
+* CPU-bound workload analizi
+* Saturation analizi
+* Kubernetes öncesi performans baseline'ı
 
-## Bir Sonraki Hedef
+## Güncel Kubernetes İlerlemesi
 
 ### Aşama 9 — Kubernetes
 
-Bu aşamada;
+Şu ana kadar tamamlananlar:
 
-- Kind Kubernetes Cluster kurulacak.
-- Docker image'ları Kubernetes üzerinde çalıştırılacak.
-- Pod kavramı öğrenilecek.
-- Deployment oluşturulacak.
-- Kubernetes Service oluşturulacak.
-- Replica mantığı incelenecek.
-- Docker Compose ile Kubernetes mimarisi karşılaştırılacak.
-- Service A ve Service B Kubernetes ortamında haberleştirilecek.
-- Metrics Server kurulumu için ortam hazırlanacak.
+* Local Kubernetes cluster
+* Control Plane ve Worker Node
+* Cluster → Node → Pod → Container ilişkisi
+* Service A Deployment
+* Service B Deployment
+* ReplicaSet
+* Desired State
+* Self-Healing
+* Pod Template
+* Label ve Selector
+* ClusterIP Service
+* `port` ve `targetPort`
+* EndpointSlice
+* Kubernetes DNS
+* Service Discovery
+* Service A → Service B Kubernetes içi HTTP iletişimi
+* `SERVICE_B_URL` environment variable
+* Rolling Update ve Rollout
+* ConfigMap
+* `configMapKeyRef`
+* Readiness Probe
+* Liveness Probe
+
+Güncel servis iletişimi:
+
+```text
+Service A Pod
+↓
+http://service-b:3001
+↓
+Kubernetes DNS
+↓
+service-b ClusterIP Service
+↓
+Service B Pod
+↓
+Express
+```
+
+Service A configuration:
+
+```text
+ConfigMap
+↓
+SERVICE_B_URL
+↓
+configMapKeyRef
+↓
+Container Environment Variable
+↓
+process.env.SERVICE_B_URL
+```
+
+Health check yapısı:
+
+```text
+Readiness Probe
+→ Pod trafik almaya hazır mı?
+
+Liveness Probe
+→ Container sağlıklı şekilde çalışıyor mu?
+```
+
+## Bir Sonraki Hedef
+
+### Metrics Server
+
+Bir sonraki aşamada:
+
+* Kubernetes resource metrics mantığı
+* CPU ve memory metric'leri
+* `kubectl top nodes`
+* `kubectl top pods`
+* Service A `/work` endpoint'i altında CPU kullanımının gözlemlenmesi
+* HPA için metrics altyapısının hazırlanması
+
+öğrenilecek.
+
+Ardından:
+
+```text
+Metrics Server
+        ↓
+Horizontal Pod Autoscaler
+        ↓
+k6 ile Kubernetes Load Test
+        ↓
+Tek Pod vs Çok Pod karşılaştırması
+```
+
+aşamasına geçilecek.

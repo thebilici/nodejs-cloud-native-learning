@@ -21,3 +21,31 @@ spec:
         - name: service-a
           image: service-a:1.1
           imagePullPolicy: IfNotPresent
+
+          env:
+            - name: SERVICE_B_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: service-a-config
+                  key: SERVICE_B_URL
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
+            successThreshold: 1
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3

@@ -2103,21 +2103,7 @@ Yanlış veya eksik cevaplanan kartlar konu başlıklarına göre bu bölüme ek
 
 - Kart 17 — `git commit` ile `git push` arasındaki fark
 
-## Node.js ve Express
 
-Henüz tekrar edilmesi gereken kart bulunmuyor.
-
-## Docker
-
-Henüz kart bulunmuyor.
-
-## Docker Compose
-
-Henüz kart bulunmuyor.
-
-## Kubernetes
-
-Henüz kart bulunmuyor.
 
 ## Metrics Server ve HPA
 
@@ -2130,3 +2116,720 @@ Henüz kart bulunmuyor.
 ## Cloud Native
 
 Henüz kart bulunmuyor.
+
+# Kubernetes Flashcards — 25 Kart
+
+## 1 — Deployment
+
+**Soru:** Kubernetes'te Deployment ne işe yarar?
+
+**Cevap:** Uygulamanın desired state'ini tanımlar ve Pod'ların ReplicaSet üzerinden yönetilmesini sağlar.
+
+---
+
+## 2 — Replica
+
+**Soru:** `replicas: 2` ne anlama gelir?
+
+**Cevap:** Kubernetes'e sadece bir kere 2 Pod oluştur demek değildir. İstenen durumda her zaman 2 Pod çalışsın anlamına gelir.
+
+```yaml
+spec:
+  replicas: 2
+```
+
+Kubernetes mevcut durumu sürekli desired state ile karşılaştırır.
+
+```text
+Desired State = 2 Pod
+Current State = 1 Pod
+
+↓
+
+Kubernetes eksik Pod'u oluşturur.
+
+↓
+
+Current State = 2 Pod
+```
+
+---
+
+## 3 — Deployment → ReplicaSet → Pod
+
+**Soru:** Deployment, ReplicaSet ve Pod arasındaki ilişki nedir?
+
+**Cevap:**
+
+```text
+Deployment
+↓
+ReplicaSet
+↓
+Pod
+↓
+Container
+```
+
+Deployment istenen durumu tanımlar.
+
+ReplicaSet gerekli Pod sayısını korur.
+
+Pod ise container'ı çalıştırır.
+
+---
+
+## 4 — Deployment Selector
+
+**Soru:** Deployment selector ne işe yarar?
+
+**Cevap:** Deployment'ın hangi Pod'ları yöneteceğini belirler.
+
+Örnek:
+
+```yaml
+selector:
+  matchLabels:
+    app: service-a
+```
+
+Bu Deployment `app=service-a` label'ına sahip Pod'ları yönetir.
+
+---
+
+## 5 — Pod Template Label
+
+**Soru:** `template.metadata.labels` ne işe yarar?
+
+**Cevap:** Deployment tarafından oluşturulacak Pod'lara hangi label'ların verileceğini belirler.
+
+Örnek:
+
+```yaml
+template:
+  metadata:
+    labels:
+      app: service-a
+```
+
+Oluşturulan Pod:
+
+```text
+app=service-a
+```
+
+label'ına sahip olur.
+
+---
+
+## 6 — Selector ve Label
+
+**Soru:** Deployment selector ile Pod template label neden eşleşmelidir?
+
+**Cevap:** Deployment'ın oluşturduğu Pod'ları kendi yönettiği Pod'lar olarak tanıyabilmesi için.
+
+Örnek:
+
+```yaml
+selector:
+  matchLabels:
+    app: service-a
+
+template:
+  metadata:
+    labels:
+      app: service-a
+```
+
+İki taraf da:
+
+```text
+app=service-a
+```
+
+olduğu için eşleşir.
+
+---
+
+## 7 — Kubernetes Service
+
+**Soru:** Kubernetes Service ne işe yarar?
+
+**Cevap:** Pod'lara stabil bir ağ erişim noktası sağlar ve gelen trafiği uygun Pod'lara yönlendirir.
+
+Pod'ların IP adresleri değişebilir.
+
+Service sayesinde:
+
+```text
+Pod IP
+```
+
+yerine:
+
+```text
+service-a
+service-b
+```
+
+gibi stabil isimler kullanılabilir.
+
+---
+
+## 8 — Deployment Selector ve Service Selector
+
+**Soru:** Deployment selector ile Service selector arasındaki fark nedir?
+
+**Cevap:**
+
+```text
+Deployment selector
+↓
+Hangi Pod'ları yöneteceğini belirler.
+
+Service selector
+↓
+Hangi Pod'lara trafik göndereceğini belirler.
+```
+
+Yani ikisi de label kullanır fakat görevleri farklıdır.
+
+---
+
+## 9 — Service Pod Seçimi
+
+**Soru:** Kubernetes Service doğrudan Deployment'ı mı seçer?
+
+**Cevap:** Hayır.
+
+Service doğrudan Pod'ları label üzerinden seçer.
+
+Örnek:
+
+```yaml
+selector:
+  app: service-b
+```
+
+Akış:
+
+```text
+Service
+↓
+selector: app=service-b
+↓
+app=service-b label'ına sahip Pod'lar
+```
+
+---
+
+## 10 — port ve targetPort
+
+**Soru:** `port` ile `targetPort` arasındaki fark nedir?
+
+**Cevap:**
+
+```text
+port
+↓
+Service'in sunduğu port
+
+targetPort
+↓
+Trafiğin Pod üzerinde gönderileceği port
+```
+
+Örneğin:
+
+```yaml
+ports:
+  - port: 3001
+    targetPort: 3001
+```
+
+Akış:
+
+```text
+Service :3001
+↓
+Pod :3001
+↓
+Express
+```
+
+---
+
+## 11 — Farklı port ve targetPort
+
+**Soru:** `port: 80` ve `targetPort: 3000` kullanılabilir mi?
+
+**Cevap:** Evet.
+
+Örneğin:
+
+```yaml
+ports:
+  - port: 80
+    targetPort: 3000
+```
+
+Akış:
+
+```text
+Client
+↓
+Service :80
+↓
+Pod :3000
+↓
+Express
+```
+
+Service'in portuyla uygulamanın container içerisindeki portunun aynı olması zorunlu değildir.
+
+---
+
+## 12 — Pod IP
+
+**Soru:** Pod IP adreslerini neden doğrudan kullanmak istemeyiz?
+
+**Cevap:** Pod'lar geçicidir.
+
+Bir Pod silinip yeniden oluşturulduğunda yeni bir IP adresi alabilir.
+
+Bu nedenle:
+
+```text
+http://10.244.1.4:3001
+```
+
+gibi doğrudan Pod IP kullanmak yerine:
+
+```text
+http://service-b:3001
+```
+
+gibi Kubernetes Service adresi kullanılır.
+
+---
+
+## 13 — Service Discovery
+
+**Soru:** Kubernetes Service Discovery neden önemlidir?
+
+**Cevap:** Servislerin değişken Pod IP adreslerini bilmeden birbirlerine stabil Service isimleri üzerinden ulaşmasını sağlar.
+
+Örneğin Service A:
+
+```text
+service-b
+```
+
+adını kullanarak Service B'ye ulaşabilir.
+
+Kubernetes DNS bu ismi çözer.
+
+---
+
+## 14 — Service A → Service B
+
+**Soru:** Service A, Service B'ye Kubernetes içerisinde hangi adresle ulaşıyor?
+
+**Cevap:**
+
+```text
+http://service-b:3001
+```
+
+Buradaki:
+
+```text
+service-b
+```
+
+bir Pod adı veya Pod IP adresi değildir.
+
+Kubernetes Service adıdır.
+
+---
+
+## 15 — curl-test Pod
+
+**Soru:** `curl-test` Pod'unun görevi nedir?
+
+**Cevap:** Kubernetes cluster içerisinden HTTP istekleri göndermek için kullandığımız geçici test client'ıdır.
+
+Uygulamamızın gerçek mimarisinin bir parçası değildir.
+
+Örneğin:
+
+```text
+curl-test
+↓
+GET http://service-a:3000/hello
+↓
+service-a Service
+↓
+Service A Pod
+```
+
+şeklinde cluster içi bağlantıyı test etmek için kullanılır.
+
+---
+
+## 16 — Service-to-Service Communication
+
+**Soru:** Service A → Service B iletişimini test ederken gerçekleşen temel akış nedir?
+
+**Cevap:**
+
+```text
+curl-test Pod
+↓
+GET http://service-a:3000/call-service-b
+↓
+Kubernetes DNS
+↓
+service-a Kubernetes Service
+↓
+Service A Pod
+↓
+Express
+↓
+/call-service-b handler
+↓
+process.env.SERVICE_B_URL
+↓
+http://service-b:3001
+↓
+Kubernetes DNS
+↓
+service-b Kubernetes Service
+↓
+Service B Pod
+↓
+Express :3001
+↓
+GET /hello
+↓
+Service B Response
+↓
+Service A
+↓
+curl-test
+```
+
+Bu test Kubernetes içerisindeki uçtan uca servis iletişimini doğrular.
+
+---
+
+## 17 — Rollout
+
+**Soru:** Kubernetes'te Rollout nedir?
+
+**Cevap:** Deployment üzerinde yapılan bir değişikliğin yeni Pod'lara uygulanması sürecidir.
+
+Örneğin Deployment'a yeni bir environment variable veya probe eklediğimizde Pod Template değişir.
+
+```text
+Deployment değişir
+↓
+Yeni ReplicaSet oluşur
+↓
+Yeni Pod'lar oluşturulur
+↓
+Eski Pod'lar kademeli kaldırılır
+↓
+Yeni versiyona geçilir
+```
+
+Bu geçiş sürecine rollout denir.
+
+---
+
+## 18 — Pod Template Değişikliği
+
+**Soru:** Deployment içerisindeki Pod Template değiştiğinde Kubernetes ne yapar?
+
+**Cevap:** Mevcut Pod'ların içeriğini doğrudan değiştirmez.
+
+Yeni bir ReplicaSet oluşturur ve yeni configuration'a sahip Pod'ları oluşturur.
+
+```text
+Eski ReplicaSet
+↓
+Eski Pod'lar
+
+Deployment değişikliği
+↓
+
+Yeni ReplicaSet
+↓
+Yeni Pod'lar
+```
+
+Yeni Pod'lar hazır oldukça eski Pod'lar kademeli olarak kaldırılır.
+
+---
+
+## 19 — kubectl rollout status
+
+**Soru:** `kubectl rollout status deployment/service-a` ne işe yarar?
+
+**Cevap:** Service A Deployment için gerçekleştirilen rollout sürecinin durumunu takip eder.
+
+```powershell
+kubectl rollout status deployment/service-a
+```
+
+Bu komut yeni rollout başlatmaz.
+
+Mevcut rollout'un tamamlanıp tamamlanmadığını kontrol eder.
+
+Başarılı olduğunda buna benzer bir çıktı alınır:
+
+```text
+deployment "service-a" successfully rolled out
+```
+
+---
+
+## 20 — ConfigMap
+
+**Soru:** Kubernetes ConfigMap ne işe yarar?
+
+**Cevap:** Gizli olmayan configuration değerlerini uygulama ve Deployment tanımından ayrı yönetmemizi sağlar.
+
+Örneğin:
+
+```yaml
+data:
+  SERVICE_B_URL: "http://service-b:3001"
+```
+
+Böylece servis adresi doğrudan Deployment içerisine hard-code edilmek zorunda kalmaz.
+
+---
+
+## 21 — SERVICE_B_URL ConfigMap
+
+**Soru:** Service A için oluşturduğumuz ConfigMap içerisinde hangi önemli değeri tuttuk?
+
+**Cevap:**
+
+```text
+SERVICE_B_URL=http://service-b:3001
+```
+
+Bu değer Service A'nın Service B'ye hangi adres üzerinden ulaşacağını belirler.
+
+Akış:
+
+```text
+Service A
+↓
+SERVICE_B_URL
+↓
+http://service-b:3001
+↓
+Service B
+```
+
+---
+
+## 22 — configMapKeyRef
+
+**Soru:** `configMapKeyRef` ne işe yarar?
+
+**Cevap:** ConfigMap içerisindeki belirli bir key'in değerini container environment variable olarak kullanmamızı sağlar.
+
+Örneğin:
+
+```yaml
+env:
+  - name: SERVICE_B_URL
+    valueFrom:
+      configMapKeyRef:
+        name: service-a-config
+        key: SERVICE_B_URL
+```
+
+Akış:
+
+```text
+service-a-config
+↓
+SERVICE_B_URL
+↓
+configMapKeyRef
+↓
+Container Environment Variable
+↓
+process.env.SERVICE_B_URL
+```
+
+Node.js uygulaması daha sonra:
+
+```typescript
+process.env.SERVICE_B_URL
+```
+
+ile bu değere ulaşabilir.
+
+---
+
+## 23 — ConfigMap Güncellemesi
+
+**Soru:** ConfigMap değiştirildiğinde çalışan container'ın environment variable değeri otomatik değişir mi?
+
+**Cevap:** Hayır.
+
+Environment variable Pod oluşturulurken container'a aktarılır.
+
+Örneğin:
+
+```text
+ConfigMap
+SERVICE_B_URL=A
+↓
+Pod oluşturuldu
+↓
+Container SERVICE_B_URL=A
+```
+
+Daha sonra ConfigMap:
+
+```text
+SERVICE_B_URL=B
+```
+
+olarak değiştirilirse çalışan container otomatik olarak `B` değerine geçmez.
+
+Yeni değerin environment variable olarak alınması için Pod'un yeniden oluşturulması gerekir.
+
+Örneğin:
+
+```powershell
+kubectl rollout restart deployment/service-a
+```
+
+kullanılabilir.
+
+---
+
+## 24 — Readiness Probe
+
+**Soru:** Readiness Probe neyi kontrol eder?
+
+**Cevap:** Pod'un şu anda trafik almaya hazır olup olmadığını kontrol eder.
+
+Biz Service A için:
+
+```yaml
+readinessProbe:
+  httpGet:
+    path: /health
+    port: 3000
+
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 2
+  failureThreshold: 3
+  successThreshold: 1
+```
+
+kullandık.
+
+Mantık:
+
+```text
+Kubernetes
+↓
+GET /health :3000
+↓
+Başarılı
+↓
+Pod Ready
+↓
+Service bu Pod'a trafik gönderebilir
+```
+
+Readiness sürekli başarısız olursa:
+
+```text
+Pod Running olabilir
+↓
+Ready = False
+↓
+Service Pod'a trafik göndermez
+```
+
+Readiness başarısızlığı temel olarak container'ı restart etmek için değil, Pod'un trafik alıp almamasını belirlemek için kullanılır.
+
+---
+
+## 25 — Liveness ve Readiness Farkı
+
+**Soru:** Liveness Probe ile Readiness Probe arasındaki temel fark nedir?
+
+**Cevap:**
+
+Readiness şu soruyu sorar:
+
+```text
+Bu Pod şu anda trafik almaya hazır mı?
+```
+
+Başarısız olduğunda:
+
+```text
+Readiness başarısız
+↓
+Pod NotReady
+↓
+Service trafiğinden çıkar
+```
+
+Liveness ise şu soruyu sorar:
+
+```text
+Bu container sağlıklı şekilde yaşamaya devam ediyor mu?
+```
+
+Biz Service A için:
+
+```yaml
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 3000
+
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 2
+  failureThreshold: 3
+```
+
+kullandık.
+
+Tekrarlayan başarısızlıklarda:
+
+```text
+Liveness başarısız
+↓
+Container sağlıksız kabul edilir
+↓
+Kubernetes container'ı restart edebilir
+```
+
+En önemli fark:
+
+```text
+Readiness
+→ Trafik almaya hazır mı?
+→ Başarısızsa trafikten çıkar.
+
+Liveness
+→ Container sağlıklı mı?
+→ Sürekli başarısızsa restart edilir.
+```

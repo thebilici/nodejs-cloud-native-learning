@@ -1002,3 +1002,130 @@ Burada queueing kavramsal olarak requestlerin socket, runtime ve Event Loop çev
 Performans analizindeki queueing her zaman RabbitMQ veya gerçek bir queue veri yapısı anlamına gelmez.
 
 ---
+  # Kubernetes Mistakes
+
+## 1 — Deployment YAML Hiyerarşisi
+
+**Hata:**
+
+`containers` alanı yanlışlıkla Deployment `spec` seviyesine yazıldı.
+
+**Hata mesajı:**
+
+```text
+unknown field "spec.containers"
+```
+
+**Doğrusu:**
+
+```text
+Deployment
+└── spec
+    └── template
+        └── spec
+            └── containers
+```
+
+**Ders:**
+
+Deployment `spec` ile Pod `template.spec` aynı şey değildir.
+
+---
+
+## 2 — YAML Girintileri
+
+**Hata:**
+
+`env`, `valueFrom`, `configMapKeyRef`, `readinessProbe` ve `livenessProbe` alanlarında girintiler karıştırıldı.
+
+**Ders:**
+
+YAML'da girinti sadece görünüm değildir. Yapının kendisini belirler.
+
+---
+
+## 3 — Service ve Deployment Selector Karışıklığı
+
+**Karışıklık:**
+
+Service selector ile Deployment selector'ın aynı işi yaptığı düşünüldü.
+
+**Doğrusu:**
+
+```text
+Deployment selector
+→ Hangi Pod'ları yönetir?
+
+Service selector
+→ Hangi Pod'lara trafik gönderir?
+```
+
+---
+
+## 4 — curl-test Pod'unun Rolü
+
+**Karışıklık:**
+
+`curl-test` Pod'unun Service A ile Service B arasındaki gerçek iletişimin bir parçası olduğu düşünüldü.
+
+**Doğrusu:**
+
+```text
+curl-test
+→ Sadece testi başlatan geçici client
+
+Gerçek servis iletişimi:
+Service A → Service B
+```
+
+---
+
+## 5 — ConfigMap Güncellemesi
+
+**Karışıklık:**
+
+ConfigMap değiştirildikten sonra sadece `apply` yapmanın çalışan container environment variable'ını otomatik güncelleyeceği düşünüldü.
+
+**Doğrusu:**
+
+Environment variable Pod oluşturulurken alınır.
+
+```text
+ConfigMap değişir
+↓
+ConfigMap apply edilir
+↓
+Pod yeniden oluşturulur
+↓
+Yeni environment variable değeri alınır
+```
+
+---
+
+## 6 — Running ve Healthy Ayrımı
+
+**Karışıklık:**
+
+Pod `Running` durumundaysa uygulamanın kesin olarak sağlıklı ve trafik almaya hazır olduğu düşünüldü.
+
+**Doğrusu:**
+
+```text
+Running
+≠
+Ready
+≠
+Healthy
+```
+
+Bu nedenle:
+
+```text
+Readiness Probe
+→ Pod trafik almaya hazır mı?
+
+Liveness Probe
+→ Container sağlıklı şekilde çalışıyor mu?
+```
+
+kontrolleri kullanılır.
