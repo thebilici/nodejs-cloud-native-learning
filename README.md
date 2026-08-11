@@ -2021,55 +2021,250 @@ Horizontal Autoscaling
 
 ---
 
-# Sonraki Aşama
+# k6 Testleri
 
-Bir sonraki teknik aşama:
+Proje içerisinde Service A'nın performansını ve Kubernetes autoscaling davranışını incelemek için farklı k6 test senaryoları kullanılmaktadır.
+
+Mevcut testler:
 
 ```text
-Kubernetes Performance Comparison
+tests/
+├── service-a-hello.js
+├── service-a-work.js
+├── service-a-work-capacity.js
+└── service-a-work-stress.js
 ```
 
-olacaktır.
+## `service-a-work-stress.js`
 
-Ana deney:
+Bu test Service A'nın CPU-bound:
 
 ```text
-1 Pod
-vs
-2 Pod
-vs
+GET /work
+```
+
+endpoint'ine kademeli olarak artan yük göndermek için kullanılır.
+
+Testin temel amacı:
+
+- Sistemi giderek artan concurrency altında zorlamak
+- CPU kullanımındaki artışı gözlemlemek
+- Latency davranışını incelemek
+- HPA scale-up davranışını tetiklemek
+- Replica sayısının yük altında nasıl değiştiğini görmek
+
+Test aşamaları:
+
+```text
+10 saniye → 10 VU
+10 saniye → 50 VU
+10 saniye → 100 VU
+10 saniye → 0 VU
+```
+
+Yük modeli:
+
+```text
+0
+↓
+10 VU
+↓
+50 VU
+↓
+100 VU
+↓
+0
+```
+
+Test içerisinde iki temel threshold kullanılmaktadır:
+
+```text
+http_req_failed
+→ Failure rate %1'in altında olmalı.
+
+http_req_duration
+→ P95 response süresi 2000 ms altında olmalı.
+```
+
+Response ayrıca:
+
+```javascript
+check(response, {
+  "status 200": (r) => r.status === 200
+});
+```
+
+ile doğrulanmaktadır.
+
+Bu test özellikle Kubernetes HPA deneyinde kullanılmıştır.
+
+Akış:
+
+```text
+k6
+↓
+/work
+↓
+CPU Usage ↑
+↓
+Metrics Server
+↓
 HPA
+↓
+Replica Count ↑
 ```
 
-Karşılaştırılacak metric'ler:
-
-- Throughput
-- Average Latency
-- Median Latency
-- P95 Latency
-- Failure Rate
-- CPU Usage
-- Replica Count
-
-Amaç şu soruya cevap vermektir:
-
-> Aynı CPU-bound workload altında Pod sayısının artırılması Service A'nın kapasitesini ve response sürelerini nasıl etkiler?
-
-Sonraki deney genel olarak:
+Gerçek test sırasında Service A'nın:
 
 ```text
-Single Pod Baseline
+2 Pod
 ↓
-Fixed Multiple Replicas
+3 Pod
 ↓
-Dynamic HPA
-↓
-Performance Comparison
+5 Pod
 ```
 
-şeklinde ilerleyecektir.
+şeklinde scale-up yaptığı gözlemlenmiştir.
+
+Testi çalıştırmak:
+
+```powershell
+k6 run .\tests\service-a-work-stress.js
+```
 
 ---
+
+## `service-a-work-capacity.js`
+
+Bu test Service A'nın `/work` endpoint'inin farklı concurrency seviyelerindeki kapasitesini ölçmek için kullanılır.
+
+Test sabit bir VU değeriyle:
+
+```text
+10 saniye
+```
+
+çalışır.
+
+VU sayısı test kodunda sabit değildir.
+
+Environment Variable üzerinden alınır:
+
+```javascript
+const vus = Number(__ENV.VUS || 1);
+```
+
+Bu sayede aynı test dosyası farklı VU değerleriyle tekrar tekrar kullanılabilir.
+
+Örneğin:
+
+```powershell
+k6 run -e VUS=1 .\tests\service-a-work-capacity.js
+```
+
+```powershell
+k6 run -e VUS=5 .\tests\service-a-work-capacity.js
+```
+
+```powershell
+k6 run -e VUS=20 .\tests\service-a-work-capacity.js
+```
+
+Bu yaklaşım sayesinde test kodunu değiştirmeden farklı concurrency seviyeleri denenebilir.
+
+Testin temel amacı:
+
+- Service A'nın throughput sınırını bulmak
+- VU arttıkça latency değişimini gözlemlemek
+- CPU-bound saturation noktasını tespit etmek
+- Kubernetes öncesi performans baseline'ı oluşturmak
+
+Test endpoint'i:
+
+```text
+GET /work
+```
+
+Test boyunca response status:
+
+```javascript
+check(response, {
+  "status is 200": (r) => r.status === 200
+});
+```
+
+ile doğrulanmaktadır.
+
+Capacity testlerinde şu VU seviyeleri denenmiştir:
+
+```text
+1
+2
+3
+4
+5
+10
+20
+40
+80
+```
+
+Gözlemlenen temel davranış:
+
+```text
+VU ↑
+↓
+Throughput yaklaşık sabit
+↓
+Latency ↑
+↓
+CPU Saturation
+```
+
+Service A'nın yaklaşık:
+
+```text
+10 request/s
+```
+
+seviyesinde throughput sınırına ulaştığı gözlemlenmiştir.
+
+Bu test Kubernetes ve HPA öncesinde Service A için performans baseline'ı oluşturmuştur.
+
+Testi çalıştırmak:
+
+```powershell
+k6 run -e VUS=10 .\tests\service-a-work-capacity.js
+```
+
+---
+
+## Testlerin Amacı
+
+Şu ana kadar kullanılan testlerin genel rolleri:
+
+| Test | Amaç | Endpoint | Yük Modeli |
+| --- | --- | --- | --- |
+| `service-a-hello.js` | Basit endpoint baseline | `/hello` | Sabit VU |
+| `service-a-work.js` | CPU workload temel testi | `/work` | Sabit VU |
+| `service-a-work-capacity.js` | Kapasite ve saturation analizi | `/work` | Parametrik VU |
+| `service-a-work-stress.js` | Stress ve HPA testi | `/work` | Kademeli VU |
+
+Bu testler birlikte:
+
+```text
+Baseline
+↓
+CPU Workload
+↓
+Capacity
+↓
+Stress
+↓
+Kubernetes HPA
+```
+
+akışını oluşturur.
 
 # Repository
 
