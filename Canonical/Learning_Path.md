@@ -1,10 +1,10 @@
 # Canonical Roadmap
 
-**Son Güncelleme:** 2026-08-10
+**Son Güncelleme:** 2026-08-11
 
 ## Güncel Konum
 
-Aşama 9 — Kubernetes
+Aşama 12 — Kubernetes Load Testing
 
 ```text
 Git ve GitHub ✅
@@ -27,126 +27,233 @@ Docker Compose ✅
         ↓
 k6 Load Testing ✅
         ↓
-Kubernetes ← Güncel Aşama
+Kubernetes ✅
         ↓
-Metrics Server
+Metrics Server ✅
         ↓
-Horizontal Pod Autoscaler
+Horizontal Pod Autoscaler ✅
+        ↓
+Kubernetes Load Testing ← Güncel Aşama
+        ↓
+Tek Pod vs Çok Pod Karşılaştırması
+        ↓
+Proje Analizi ve Genel Tekrar
 ```
 
-## Tamamlanan Aşama
+## Tamamlanan Aşamalar
 
-### Aşama 8 — k6 Load Testing
+### Aşama 8 — k6 Load Testing ✅
 
-Tamamlanan ana konular:
+Öğrenilen ana konular:
 
-* VU ve Iteration
-* Throughput ve Latency
-* Average, Median, P95
-* `check()` ve `threshold`
-* Load Test
-* Stress Test
-* Capacity Test
-* `stages`
-* `__ENV.VUS`
-* CPU-bound workload analizi
-* Saturation analizi
-* Kubernetes öncesi performans baseline'ı
+- VU ve Iteration
+- Throughput ve Latency
+- Average, Median ve P95
+- `check()` ve `threshold`
+- Load Test
+- Stress Test
+- Capacity Test
+- `stages`
+- `__ENV.VUS`
+- CPU-bound workload analizi
+- Saturation analizi
+- Kubernetes öncesi performans baseline'ı
 
-## Güncel Kubernetes İlerlemesi
+### Aşama 9 — Kubernetes ✅
 
-### Aşama 9 — Kubernetes
+Öğrenilen ana konular:
 
-Şu ana kadar tamamlananlar:
+- Local Kubernetes Cluster
+- Control Plane ve Worker Node
+- Cluster → Node → Pod → Container ilişkisi
+- Deployment
+- ReplicaSet
+- Desired State
+- Self-Healing
+- Pod Template
+- Label ve Selector
+- ClusterIP Service
+- `port` ve `targetPort`
+- EndpointSlice
+- Kubernetes DNS
+- Service Discovery
+- Kubernetes içi servisler arası iletişim
+- Rolling Update ve Rollout
+- ConfigMap
+- `configMapKeyRef`
+- Readiness Probe
+- Liveness Probe
+- Port Forward
 
-* Local Kubernetes cluster
-* Control Plane ve Worker Node
-* Cluster → Node → Pod → Container ilişkisi
-* Service A Deployment
-* Service B Deployment
-* ReplicaSet
-* Desired State
-* Self-Healing
-* Pod Template
-* Label ve Selector
-* ClusterIP Service
-* `port` ve `targetPort`
-* EndpointSlice
-* Kubernetes DNS
-* Service Discovery
-* Service A → Service B Kubernetes içi HTTP iletişimi
-* `SERVICE_B_URL` environment variable
-* Rolling Update ve Rollout
-* ConfigMap
-* `configMapKeyRef`
-* Readiness Probe
-* Liveness Probe
+### Aşama 10 — Metrics Server ✅
 
-Güncel servis iletişimi:
+Öğrenilen ana konular:
+
+- Kubernetes Resource Metrics
+- Metrics Server
+- Metrics API
+- CPU ve Memory Metrics
+- CPU Millicore
+- `kubectl top pods`
+- `kubectl top nodes`
+- Resource Usage
+- Resource Request
+- Resource Limit
+- CPU-bound workload altında resource gözlemleme
+
+Temel ilişki:
 
 ```text
-Service A Pod
+Pod
 ↓
-http://service-b:3001
+Kubelet
 ↓
-Kubernetes DNS
+Metrics Server
 ↓
-service-b ClusterIP Service
+Metrics API
 ↓
-Service B Pod
+kubectl top / HPA
+```
+
+### Aşama 11 — Horizontal Pod Autoscaler ✅
+
+Öğrenilen ana konular:
+
+- Horizontal Scaling
+- HPA çalışma mantığı
+- `minReplicas`
+- `maxReplicas`
+- CPU Utilization
+- CPU Usage / CPU Request ilişkisi
+- HPA → Deployment ilişkisi
+- Scale Up
+- Scale Down
+- Scale Down Stabilization
+- HPA Conditions
+- HPA Events
+
+Temel akış:
+
+```text
+CPU Load
+↓
+Metrics Server
+↓
+HPA
+↓
+CPU Utilization
+↓
+Target ile karşılaştır
+↓
+Deployment Replica Sayısı
+↓
+Scale Up / Scale Down
+```
+
+## Güncel Aşama
+
+### Aşama 12 — Kubernetes Load Testing
+
+Bu aşamada amaç, daha önce öğrendiğimiz k6 performans testlerini Kubernetes ve HPA ile birleştirmek.
+
+Öğrenilecek ana konular:
+
+- Kubernetes üzerinde kontrollü load test
+- HPA davranışının yük altında gözlemlenmesi
+- Pod sayısı değişirken performansın gözlemlenmesi
+- CPU utilization ile replica sayısı ilişkisi
+- Throughput değişimi
+- Latency değişimi
+- P95 değişimi
+- Scaling sırasında Pod durumlarının gözlemlenmesi
+
+Temel deney:
+
+```text
+k6
+↓
+Service A
+↓
+CPU Load
+↓
+Metrics Server
+↓
+HPA
+↓
+Replica Sayısı Artar
+↓
+Performans Değişimi Ölçülür
+```
+
+## Sonraki Aşama
+
+### Aşama 13 — Tek Pod vs Çok Pod Karşılaştırması
+
+Amaç:
+
+Aynı workload altında farklı replica sayılarının performansa etkisini karşılaştırmak.
+
+Karşılaştırılacak senaryolar:
+
+```text
+1 Pod
+vs
+2 Pod
+vs
+HPA ile Dinamik Pod Sayısı
+```
+
+İncelenecek metrikler:
+
+- Throughput
+- Average Latency
+- P95 Latency
+- Request Failure Rate
+- CPU Usage
+- Replica Sayısı
+
+Amaç şu soruya cevap vermek:
+
+> Pod sayısı arttığında uygulamanın kapasitesi ve response süreleri nasıl değişiyor?
+
+## Final Aşama
+
+### Aşama 14 — Proje Analizi ve Genel Tekrar
+
+Bu aşamada proje baştan sona tekrar edilecek.
+
+```text
+Node.js
 ↓
 Express
-```
-
-Service A configuration:
-
-```text
-ConfigMap
 ↓
-SERVICE_B_URL
+Service A / Service B
 ↓
-configMapKeyRef
+Docker
 ↓
-Container Environment Variable
+Docker Compose
 ↓
-process.env.SERVICE_B_URL
-```
-
-Health check yapısı:
-
-```text
-Readiness Probe
-→ Pod trafik almaya hazır mı?
-
-Liveness Probe
-→ Container sağlıklı şekilde çalışıyor mu?
-```
-
-## Bir Sonraki Hedef
-
-### Metrics Server
-
-Bir sonraki aşamada:
-
-* Kubernetes resource metrics mantığı
-* CPU ve memory metric'leri
-* `kubectl top nodes`
-* `kubectl top pods`
-* Service A `/work` endpoint'i altında CPU kullanımının gözlemlenmesi
-* HPA için metrics altyapısının hazırlanması
-
-öğrenilecek.
-
-Ardından:
-
-```text
+k6
+↓
+Kubernetes
+↓
 Metrics Server
-        ↓
-Horizontal Pod Autoscaler
-        ↓
-k6 ile Kubernetes Load Test
-        ↓
-Tek Pod vs Çok Pod karşılaştırması
+↓
+HPA
 ```
 
-aşamasına geçilecek.
+Amaç yalnızca komutları hatırlamak değil, bütün sistemin nasıl birlikte çalıştığını açıklayabilmek.
+
+Final tekrar kapsamında:
+
+- Mimariyi sıfırdan açıklama
+- Servisler arası iletişimi açıklama
+- Docker ve Kubernetes farklarını açıklama
+- Kubernetes resource'larını açıklama
+- Metrics Server veri akışını açıklama
+- HPA karar mekanizmasını açıklama
+- Load test sonuçlarını yorumlama
+- Sık yapılan hataları tekrar etme
+- Flashcards
+- Questions
+- Genel proje değerlendirmesi

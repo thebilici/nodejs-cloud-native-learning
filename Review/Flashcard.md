@@ -2833,3 +2833,567 @@ Liveness
 → Container sağlıklı mı?
 → Sürekli başarısızsa restart edilir.
 ```
+
+# Flashcards — Metrics Server, Resources ve HPA
+
+## Flashcard 01
+
+**Soru:** Metrics Server'ın Kubernetes'teki temel görevi nedir?
+
+**Cevap:** Node'lardaki Kubelet'lerden CPU ve memory resource metric'lerini toplayıp Kubernetes Metrics API üzerinden kullanılabilir hale getirmektir.
+
+---
+
+## Flashcard 02
+
+**Soru:** Metrics Server metric'leri hangi component üzerinden toplar?
+
+**Cevap:** Her Node üzerinde çalışan Kubelet üzerinden toplar.
+
+---
+
+## Flashcard 03
+
+**Soru:** Metrics Server ile HPA aynı şey midir?
+
+**Cevap:** Hayır.
+
+Metrics Server metric sağlar.
+
+HPA bu metric'leri kullanarak replica sayısı hakkında scaling kararı verir.
+
+```text
+Metrics Server
+↓
+Metrics
+↓
+HPA
+↓
+Scaling kararı
+```
+
+---
+
+## Flashcard 04
+
+**Soru:** Pod'ların CPU ve memory kullanımını hangi komutla görebiliriz?
+
+**Cevap:**
+
+```powershell
+kubectl top pods
+```
+
+---
+
+## Flashcard 05
+
+**Soru:** Kubernetes Node'larının CPU ve memory kullanımını hangi komutla görebiliriz?
+
+**Cevap:**
+
+```powershell
+kubectl top nodes
+```
+
+---
+
+## Flashcard 06
+
+**Soru:** Kubernetes CPU metric'indeki `m` ne anlama gelir?
+
+**Cevap:** Millicore anlamına gelir.
+
+```text
+1000m = 1 CPU Core
+500m  = 0.5 CPU Core
+100m  = 0.1 CPU Core
+```
+
+---
+
+## Flashcard 07
+
+**Soru:** `kubectl top pods` çıktısındaki `402m` CPU yaklaşık ne anlama gelir?
+
+**Cevap:**
+
+Yaklaşık:
+
+```text
+0.402 CPU Core
+```
+
+kullanımı anlamına gelir.
+
+---
+
+## Flashcard 08
+
+**Soru:** Resource Request nedir?
+
+**Cevap:** Kubernetes'e container'ın ihtiyaç duyduğu resource miktarı hakkında verilen değerdir.
+
+Scheduler Pod'u hangi Node'a yerleştireceğini hesaplarken request değerlerini dikkate alır.
+
+---
+
+## Flashcard 09
+
+**Soru:** `cpu request: 100m` container'ın sürekli `100m` CPU kullanacağı anlamına gelir mi?
+
+**Cevap:** Hayır.
+
+Gerçek kullanım:
+
+```text
+3m
+50m
+200m
+```
+
+gibi farklı değerlerde olabilir.
+
+Request ile Usage aynı şey değildir.
+
+---
+
+## Flashcard 10
+
+**Soru:** Resource Usage nedir?
+
+**Cevap:** Container'ın o anda gerçekten kullandığı resource miktarıdır.
+
+Örneğin:
+
+```text
+CPU Request = 100m
+CPU Usage   = 25m
+```
+
+olabilir.
+
+---
+
+## Flashcard 11
+
+**Soru:** Resource Limit nedir?
+
+**Cevap:** Container'ın kullanabileceği resource için belirlenen üst sınırdır.
+
+Örneğin:
+
+```text
+CPU Limit    = 500m
+Memory Limit = 256Mi
+```
+
+---
+
+## Flashcard 12
+
+**Soru:** CPU limit aşılmaya çalışıldığında genellikle ne olur?
+
+**Cevap:** CPU throttling uygulanabilir.
+
+Container daha fazla CPU kullanmak ister fakat kullanım sınırlandırılır.
+
+---
+
+## Flashcard 13
+
+**Soru:** Memory limit aşılırsa ne olabilir?
+
+**Cevap:** Container OOM nedeniyle terminate edilebilir.
+
+CPU limit ve memory limit davranışları bu yüzden aynı değildir.
+
+---
+
+## Flashcard 14
+
+**Soru:** Service A için kullandığımız resource request ve limit değerleri nelerdir?
+
+**Cevap:**
+
+```yaml
+resources:
+  requests:
+    cpu: "100m"
+    memory: "64Mi"
+  limits:
+    cpu: "500m"
+    memory: "256Mi"
+```
+
+---
+
+## Flashcard 15
+
+**Soru:** Request, Usage ve Limit arasındaki temel fark nedir?
+
+**Cevap:**
+
+```text
+Request
+→ Kubernetes'e bildirilen resource ihtiyacı
+
+Usage
+→ Gerçek resource tüketimi
+
+Limit
+→ Kullanılabilecek resource üst sınırı
+```
+
+---
+
+## Flashcard 16
+
+**Soru:** Horizontal Scaling nedir?
+
+**Cevap:** Uygulama instance veya Pod sayısının artırılıp azaltılmasıdır.
+
+Örneğin:
+
+```text
+2 Pod
+↓
+3 Pod
+↓
+5 Pod
+```
+
+---
+
+## Flashcard 17
+
+**Soru:** Horizontal Scaling ile Vertical Scaling arasındaki fark nedir?
+
+**Cevap:**
+
+```text
+Horizontal Scaling
+→ Pod sayısını değiştirir.
+
+Vertical Scaling
+→ Tek Pod'un CPU/Memory kapasitesini değiştirir.
+```
+
+---
+
+## Flashcard 18
+
+**Soru:** HPA'nın açılımı nedir?
+
+**Cevap:**
+
+```text
+Horizontal Pod Autoscaler
+```
+
+Metric'lere göre workload replica sayısını otomatik olarak değiştirebilir.
+
+---
+
+## Flashcard 19
+
+**Soru:** HPA doğrudan Pod oluşturur mu?
+
+**Cevap:** Hayır.
+
+Temel zincir:
+
+```text
+HPA
+↓
+Deployment
+↓
+ReplicaSet
+↓
+Pod
+```
+
+HPA replica ihtiyacını değiştirir, Pod'ları Deployment ve ReplicaSet yönetir.
+
+---
+
+## Flashcard 20
+
+**Soru:** `scaleTargetRef` ne işe yarar?
+
+**Cevap:** HPA'nın hangi Kubernetes workload'unu scale edeceğini belirtir.
+
+Bizim projede:
+
+```text
+Deployment/service-a
+```
+
+hedeflenmiştir.
+
+---
+
+## Flashcard 21
+
+**Soru:** Service A HPA için `minReplicas` ve `maxReplicas` değerlerimiz nedir?
+
+**Cevap:**
+
+```text
+minReplicas = 2
+maxReplicas = 5
+```
+
+Yani HPA Service A'yı 2 ile 5 Pod arasında ölçekleyebilir.
+
+---
+
+## Flashcard 22
+
+**Soru:** Service A HPA'nın CPU utilization target değeri nedir?
+
+**Cevap:**
+
+```text
+50%
+```
+
+Manifestte:
+
+```yaml
+averageUtilization: 50
+```
+
+şeklinde tanımlanmıştır.
+
+---
+
+## Flashcard 23
+
+**Soru:** CPU Request `100m`, CPU Usage `50m` ise yaklaşık utilization kaçtır?
+
+**Cevap:**
+
+```text
+50m / 100m × 100
+=
+50%
+```
+
+---
+
+## Flashcard 24
+
+**Soru:** HPA CPU utilization değeri `%100` üzerine çıkabilir mi?
+
+**Cevap:** Evet.
+
+Örneğin:
+
+```text
+CPU Request = 100m
+CPU Usage   = 200m
+```
+
+ise utilization yaklaşık:
+
+```text
+200%
+```
+
+olabilir.
+
+---
+
+## Flashcard 25
+
+**Soru:** `kubectl get hpa` çıktısındaki:
+
+```text
+cpu: 67%/50%
+```
+
+ne anlama gelir?
+
+**Cevap:**
+
+```text
+67%
+→ mevcut ortalama CPU utilization
+
+50%
+→ hedef CPU utilization
+```
+
+Mevcut değer target'ın üzerindedir.
+
+---
+
+## Flashcard 26
+
+**Soru:** Gerçek HPA stress testimizde Service A replica sayısı nasıl değişti?
+
+**Cevap:**
+
+```text
+2 Pod
+↓
+3 Pod
+↓
+5 Pod
+```
+
+CPU yükü arttığında HPA otomatik scale-up gerçekleştirdi.
+
+---
+
+## Flashcard 27
+
+**Soru:** HPA scale-up sırasında yeni bir Pod hangi durumları geçebilir?
+
+**Cevap:**
+
+```text
+Pending
+↓
+Running 0/1
+↓
+Running 1/1
+```
+
+`Running` olmak her zaman `Ready` olmak anlamına gelmez.
+
+---
+
+## Flashcard 28
+
+**Soru:** Scale Down Stabilization neden vardır?
+
+**Cevap:** CPU kısa süreli düştüğünde HPA'nın Pod'ları hemen silmesini engelleyerek gereksiz replica dalgalanmasını azaltmaya yardımcı olur.
+
+Örneğin:
+
+```text
+2 → 5 → 2 → 5 → 2
+```
+
+gibi sürekli değişimleri azaltır.
+
+---
+
+## Flashcard 29
+
+**Soru:** `kubectl describe hpa service-a-hpa` ile hangi önemli bilgiler görülebilir?
+
+**Cevap:**
+
+```text
+Metrics
+Current / Desired Replicas
+Conditions
+Events
+```
+
+Özellikle:
+
+```text
+AbleToScale
+ScalingActive
+ScalingLimited
+SuccessfulRescale
+```
+
+bilgileri incelenebilir.
+
+---
+
+## Flashcard 30
+
+**Soru:** k6'dan başlayarak HPA scale-up'a kadar tam sistem akışı nasıldır?
+
+**Cevap:**
+
+```text
+k6
+↓
+Service A /work
+↓
+CPU-bound workload
+↓
+CPU Usage yükselir
+↓
+Kubelet
+↓
+Metrics Server
+↓
+Metrics API
+↓
+HPA
+↓
+CPU Utilization target ile karşılaştırılır
+↓
+Deployment replica sayısı artırılır
+↓
+ReplicaSet
+↓
+Yeni Service A Pod'ları
+```
+
+Kubelet
+↓
+Metrics Server
+↓
+Metrics API
+↓
+kubectl top / HPA
+
+Kubelet, her Node üzerinde çalışan agent'tır. O Node'daki Pod ve container'ların durumuyla ilgilenir ve CPU/memory gibi resource kullanım bilgilerine erişebilir. Yani metric'in kaynağına en yakın katman budur.
+
+Metrics Server, cluster'daki Kubelet'lerden bu resource metric'lerini toplar. Kendisi CPU'yu ölçen ana kaynak değildir; Kubelet'lerden gelen veriyi aggregate eder ve Kubernetes'in kullanabileceği hale getirir.
+
+Metrics API ise bu toplanmış verinin Kubernetes API üzerinden erişilebilir olmasını sağlar. Yani kubectl top pods veya HPA, doğrudan Kubelet'le tek tek konuşmak yerine Metrics API üzerinden metric ister.
+
+Akış şöyle:
+
+Service A Pod
+↓
+CPU kullanır
+↓
+Kubelet bunu görür
+↓
+Metrics Server Kubelet'ten metric'i toplar
+↓
+Metrics API üzerinden sunar
+↓
+kubectl top pods bunu gösterir
+veya
+HPA bunu scaling kararında kullanır
+
+Kısaca roller:
+
+Kubelet
+→ Node tarafındaki metric kaynağına erişir
+
+Metrics Server
+→ Kubelet'lerden metric toplar
+
+Metrics API
+→ Toplanan metric'i Kubernetes'e sunar
+
+Bizim projede de tam olarak şu oldu:
+
+/work yükü
+↓
+Service A CPU ↑
+↓
+Kubelet
+↓
+Metrics Server
+↓
+Metrics API
+↓
+HPA
+↓
+Replica sayısı arttı
+
+En kritik nokta şu: Metrics Server veri toplar, Metrics API veri sunar, HPA ise bu veriye bakıp karar verir.

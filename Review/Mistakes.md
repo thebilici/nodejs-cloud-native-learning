@@ -1129,3 +1129,592 @@ Liveness Probe
 ```
 
 kontrolleri kullanılır.
+
+# Mistakes — Metrics Server, Resources ve HPA
+
+## 1. `kubectl top` Komutunu Eksik Kullanmak
+
+### Yaptığım Hata
+
+İlk olarak:
+
+```powershell
+kubectl top
+```
+
+komutunu çalıştırdım.
+
+Ancak CPU ve memory değerleri yerine `kubectl top` komutunun kullanım bilgilerini gördüm.
+
+### Doğrusu
+
+Pod metric'lerini görmek için:
+
+```powershell
+kubectl top pods
+```
+
+Node metric'lerini görmek için:
+
+```powershell
+kubectl top nodes
+```
+
+kullanılmalı.
+
+### Ne Öğrendim?
+
+`kubectl top` ana komuttur ve hangi Kubernetes resource'unu incelemek istediğimi ayrıca belirtmem gerekir.
+
+```text
+kubectl top pods
+→ Pod CPU / Memory
+
+kubectl top nodes
+→ Node CPU / Memory
+```
+
+---
+
+## 2. Metrics Server Pod'unun `Running` Olmasını Yeterli Sanmak
+
+### Yaptığım Hata
+
+Metrics Server Pod'u:
+
+```text
+0/1 Running
+```
+
+durumundayken Metrics Server'ın tamamen hazır olduğunu düşündüm.
+
+Fakat:
+
+```powershell
+kubectl top pods
+```
+
+çalıştırdığımda:
+
+```text
+error: Metrics API not available
+```
+
+hatasını aldım.
+
+### Kontrol
+
+Metrics Server Pod'unu kontrol ettiğimde:
+
+```text
+READY   STATUS
+0/1     Running
+```
+
+durumundaydı.
+
+Yani Pod çalışıyordu fakat container henüz Ready değildi.
+
+### Ne Öğrendim?
+
+Kubernetes'te:
+
+```text
+Running ≠ Ready
+```
+
+Pod'un `Running` olması process'in çalıştığını gösterir.
+
+Ancak uygulamanın veya container'ın gerçekten kullanıma hazır olduğunu garanti etmez.
+
+Metrics Server düzgün çalışmaya başladığında:
+
+```text
+1/1 Running
+```
+
+durumuna geçti.
+
+Bundan sonra:
+
+```powershell
+kubectl top pods
+```
+
+komutu CPU ve memory metric'lerini gösterebildi.
+
+---
+
+## 3. Metrics API'nin Kullanılabilir Olduğunu Kontrol Etmemek
+
+### Yaptığım Hata
+
+Metrics Server Pod'unu gördüğüm için doğrudan `kubectl top pods` çalıştırdım.
+
+Fakat Metrics API henüz kullanılabilir değildi.
+
+Kontrol ettiğimde:
+
+```powershell
+kubectl get apiservice v1beta1.metrics.k8s.io
+```
+
+çıktısında:
+
+```text
+AVAILABLE
+False (MissingEndpoints)
+```
+
+gördüm.
+
+### Ne Öğrendim?
+
+Metrics Server Pod'unun bulunması tek başına yeterli değildir.
+
+Zincirin tamamının çalışması gerekir:
+
+```text
+Kubelet
+↓
+Metrics Server
+↓
+Metrics API
+↓
+kubectl top / HPA
+```
+
+Metrics API kullanılabilir değilse hem `kubectl top` hem de metric kullanan HPA düzgün çalışamaz.
+
+---
+
+## 4. Resource Ayarlarında YAML Girintisini Yanlış Yapmak
+
+### Yaptığım Hata
+
+Service A Deployment'a `resources` eklerken YAML indentation seviyesini yanlış konumlandırdım.
+
+Kubernetes YAML dosyalarında bir alanın hangi objenin altında bulunduğu önemlidir.
+
+### Doğrusu
+
+`resources`, ilgili container'ın altında bulunmalıdır:
+
+```yaml
+spec:
+  containers:
+    - name: service-a
+      image: service-a:1.1
+
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "64Mi"
+        limits:
+          cpu: "500m"
+          memory: "256Mi"
+```
+
+### Ne Öğrendim?
+
+YAML'da indentation yalnızca kodun güzel görünmesini sağlamaz.
+
+Aynı zamanda yapıyı belirler.
+
+```text
+Pod Spec
+↓
+Containers
+↓
+Service A Container
+↓
+Resources
+├── Requests
+└── Limits
+```
+
+Yanlış indentation Kubernetes'in alanı yanlış yerde görmesine veya manifesti tamamen reddetmesine neden olabilir.
+
+---
+
+## 5. Resource Request'i Gerçek CPU Kullanımı Sanmak
+
+### Yaptığım Hata
+
+İlk başta:
+
+```yaml
+requests:
+  cpu: "100m"
+```
+
+değerini Service A'nın sürekli `100m` CPU kullanacağı şeklinde düşündüm.
+
+### Doğrusu
+
+Request gerçek kullanım değildir.
+
+Örneğin:
+
+```text
+CPU Request = 100m
+CPU Usage   = 3m
+```
+
+olabilir.
+
+Yük altında ise:
+
+```text
+CPU Request = 100m
+CPU Usage   = 200m
+```
+
+olabilir.
+
+### Ne Öğrendim?
+
+Üç kavramı ayırmam gerekiyor:
+
+```text
+Request
+→ Kubernetes'e bildirilen ihtiyaç
+
+Usage
+→ Gerçek kullanım
+
+Limit
+→ Kullanılabilecek üst sınır
+```
+
+Ayrıca CPU request değeri HPA'nın CPU utilization hesabında da önemlidir.
+
+---
+
+## 6. HPA CPU Değerinin `%100` Üzerine Çıkmasını Hata Sanmak
+
+### Yaptığım Hata
+
+HPA testinde:
+
+```text
+cpu: 245%/50%
+```
+
+gördüğümde `%245` CPU kullanımının hatalı olabileceğini düşündüm.
+
+### Doğrusu
+
+HPA'daki CPU utilization doğrudan bilgisayarın toplam CPU yüzdesi değildir.
+
+CPU request değerine göre hesaplanır.
+
+Örneğin:
+
+```text
+CPU Request = 100m
+CPU Usage   = 245m
+```
+
+ise yaklaşık:
+
+```text
+245m / 100m × 100
+=
+245%
+```
+
+olabilir.
+
+### Ne Öğrendim?
+
+HPA çıktısındaki:
+
+```text
+cpu: 245%/50%
+```
+
+şu şekilde okunmalıdır:
+
+```text
+245%
+→ Mevcut CPU utilization
+
+50%
+→ Hedef CPU utilization
+```
+
+Bu yüzden HPA utilization değerinin `%100` üzerinde olması mümkündür.
+
+---
+
+## 7. HPA'nın Doğrudan Pod Oluşturduğunu Düşünmek
+
+### Yaptığım Hata
+
+HPA CPU yükseldiğinde yeni Pod'ları doğrudan HPA'nın oluşturduğunu düşündüm.
+
+### Doğrusu
+
+HPA'nın temel görevi gerekli replica sayısını hesaplayıp hedef workload'u scale etmektir.
+
+Bizim yapımızda:
+
+```text
+HPA
+↓
+Deployment
+↓
+ReplicaSet
+↓
+Pods
+```
+
+şeklinde çalışır.
+
+HPA:
+
+```text
+2 replica yeterli değil
+→ daha fazla replica gerekli
+```
+
+kararı verir.
+
+Deployment'ın replica sayısı değişir.
+
+ReplicaSet gerekli Pod'ları oluşturur.
+
+### Ne Öğrendim?
+
+Kubernetes controller'larının sorumluluklarını birbirinden ayırmak gerekiyor.
+
+```text
+Metrics Server
+→ Metric sağlar
+
+HPA
+→ Scaling kararı verir
+
+Deployment
+→ Desired state'i yönetir
+
+ReplicaSet
+→ Pod sayısını korur
+```
+
+---
+
+## 8. Yeni Pod'un `Running` Olmasını Trafik Almaya Hazır Sanmak
+
+### Yaptığım Hata
+
+HPA scale-up sırasında yeni Pod'larda:
+
+```text
+0/1 Running
+```
+
+gördüğümde Pod'un tamamen hazır olduğunu düşündüm.
+
+### Doğrusu
+
+`Running` ve `Ready` aynı kavram değildir.
+
+Örneğin:
+
+```text
+0/1 Running
+```
+
+container process'inin çalıştığını fakat henüz Ready olmadığını gösterebilir.
+
+Readiness Probe başarılı olduğunda:
+
+```text
+1/1 Running
+```
+
+haline gelir.
+
+### Ne Öğrendim?
+
+Yeni Pod'un lifecycle'ını şu şekilde düşünebilirim:
+
+```text
+Pending
+↓
+Running
+↓
+Readiness Probe
+↓
+Ready
+↓
+Trafik alabilir
+```
+
+Özellikle autoscaling sırasında yeni Pod oluşturulması tek başına yeterli değildir.
+
+Pod'un trafiğe hazır hale gelmesi de gerekir.
+
+---
+
+## 9. HPA'nın Scale Down İşlemini Hemen Yapmasını Beklemek
+
+### Yaptığım Hata
+
+k6 testi bittikten ve CPU kullanımı düştükten sonra replica sayısının hemen:
+
+```text
+5 → 2
+```
+
+olmasını bekledim.
+
+Ancak bir süre 5 Pod görmeye devam ettim.
+
+### Doğrusu
+
+HPA scale-down işlemini her zaman anında gerçekleştirmez.
+
+Scale-down stabilization mekanizması vardır.
+
+Basitleştirilmiş akış:
+
+```text
+Load Test biter
+↓
+CPU düşer
+↓
+Yeni metric'ler gelir
+↓
+HPA değerlendirir
+↓
+Stabilization
+↓
+Replica sayısı azaltılır
+```
+
+### Ne Öğrendim?
+
+Bu davranış sistemin sürekli:
+
+```text
+2 → 5 → 2 → 5 → 2
+```
+
+şeklinde gereksiz şekilde scale olmasını azaltmaya yardımcı olur.
+
+Bir süre sonra Service A'nın tekrar minimum replica sayısı olan:
+
+```text
+2
+```
+
+seviyesine indiğini gözlemledim.
+
+---
+
+## 10. Eski Pod İsmini Kullanmak
+
+### Yaptığım Hata
+
+Daha önce gördüğüm bir Pod'u incelemek için:
+
+```powershell
+kubectl describe pod service-a-d784cdc6-kr9pw
+```
+
+çalıştırdım.
+
+Ancak:
+
+```text
+Error from server (NotFound)
+```
+
+hatasını aldım.
+
+### Sebebi
+
+HPA ve Deployment nedeniyle Pod'lar oluşturulup silinebiliyor.
+
+Bu yüzden daha önce gördüğüm Pod artık cluster içerisinde bulunmayabilir.
+
+### Doğrusu
+
+Önce mevcut Pod'ları tekrar kontrol etmek gerekir:
+
+```powershell
+kubectl get pods
+```
+
+Daha sonra güncel Pod isminden biri kullanılmalıdır:
+
+```powershell
+kubectl describe pod <güncel-pod-adı>
+```
+
+### Ne Öğrendim?
+
+Kubernetes'te Pod isimlerini kalıcı olarak düşünmemeliyim.
+
+Özellikle:
+
+```text
+Deployment
++
+ReplicaSet
++
+HPA
+```
+
+kullanılan sistemlerde Pod'lar disposable yapılardır.
+
+Pod silinebilir ve yerine farklı isimli yeni bir Pod oluşturulabilir.
+
+---
+
+# Genel Çıkarım
+
+Bu aşamadaki hataların çoğu Kubernetes component'lerinin görevlerini ve durumlarını birbirinden ayırmakla ilgiliydi.
+
+Özellikle şu ayrımları netleştirdim:
+
+```text
+Running ≠ Ready
+
+Request ≠ Usage
+
+Usage ≠ Limit
+
+Metrics Server ≠ HPA
+
+HPA ≠ Deployment
+
+Running Pod ≠ Trafiğe hazır Pod
+```
+
+Genel sistem akışını da daha net öğrendim:
+
+```text
+Application Workload
+↓
+CPU / Memory Usage
+↓
+Kubelet
+↓
+Metrics Server
+↓
+Metrics API
+↓
+HPA
+↓
+Deployment
+↓
+ReplicaSet
+↓
+Pods
+```
+
+Bu hatalar sayesinde Metrics Server ve HPA'nın sadece komutlarını değil, Kubernetes içerisindeki çalışma mantığını da daha iyi anlamış oldum.

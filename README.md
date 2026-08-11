@@ -1,26 +1,35 @@
 # Node.js Cloud Native Learning
 
-Bu repository, gerçek bir şirket projesi geliştiriyormuş gibi ilerleyerek **Node.js tabanlı Cloud Native Backend Development** öğrenmek amacıyla oluşturulmuştur.
+Bu repository, gerçek bir backend projesi geliştiriyormuş gibi ilerleyerek **Node.js tabanlı Cloud Native Backend Development** öğrenmek amacıyla oluşturulmuştur.
 
-Projenin amacı yalnızca çalışan bir uygulama geliştirmek değildir.
+Bu projenin amacı yalnızca çalışan iki HTTP servisi geliştirmek değildir.
 
-Asıl hedef;
+Asıl amaç;
 
 - Git ve GitHub çalışma disiplini kazanmak
-- Node.js ve TypeScript ile servis geliştirmek
-- Docker ve Docker Compose ekosistemini öğrenmek
-- Servisler arası iletişim kurmak
-- Load ve Stress Testing yapmak
+- Node.js ve TypeScript ile backend servis geliştirmek
+- Express ile katmanlı servis mimarisi oluşturmak
+- Environment Variable kullanımını öğrenmek
+- Docker image ve container mantığını anlamak
+- Docker Network ve Docker DNS kullanmak
+- Servisler arası HTTP iletişimi kurmak
+- Docker Compose ile multi-service uygulama yönetmek
+- k6 ile Load, Stress ve Capacity Testing yapmak
 - Kubernetes üzerinde servisleri çalıştırmak
-- Metrics Server ile kaynak kullanımını izlemek
-- Horizontal Pod Autoscaler ile autoscaling mantığını anlamak
-- Gerçek backend ve Cloud Native mimarisini adım adım uygulamaktır.
+- Deployment, ReplicaSet, Pod ve Service ilişkisini öğrenmek
+- ConfigMap kullanmak
+- Readiness ve Liveness Probe kullanmak
+- Metrics Server ile CPU ve memory kullanımını gözlemlemek
+- Kubernetes Resource Request ve Limit yapılandırmak
+- Horizontal Pod Autoscaler ile otomatik ölçekleme yapmak
+- k6 ile gerçek yük oluşturarak HPA davranışını gözlemlemek
+- Cloud Native backend mimarisini uçtan uca anlamaktır.
 
 ---
 
 # Öğrenme Hedefleri
 
-Bu repository boyunca aşağıdaki teknolojiler uygulamalı olarak öğrenilmektedir.
+Repository boyunca aşağıdaki teknolojiler ve kavramlar uygulamalı olarak çalışılmaktadır.
 
 - Git
 - GitHub
@@ -28,15 +37,36 @@ Bu repository boyunca aşağıdaki teknolojiler uygulamalı olarak öğrenilmekt
 - TypeScript
 - Express
 - Environment Variables
+- Katmanlı Backend Mimarisi
 - Docker
+- Docker Image
+- Docker Container
 - Docker Network
 - Docker DNS
 - Docker Compose
+- Healthcheck
 - Service-to-Service Communication
 - k6
+- Load Testing
+- Stress Testing
+- Capacity Testing
 - Kubernetes
+- Deployment
+- ReplicaSet
+- Pod
+- Service
+- ClusterIP
+- Kubernetes DNS
+- Service Discovery
+- ConfigMap
+- Readiness Probe
+- Liveness Probe
 - Metrics Server
-- Horizontal Pod Autoscaler (HPA)
+- Metrics API
+- Resource Request
+- Resource Limit
+- Horizontal Pod Autoscaler
+- Horizontal Scaling
 
 ---
 
@@ -47,15 +77,18 @@ Bu repository boyunca aşağıdaki teknolojiler uygulamalı olarak öğrenilmekt
 | Node.js | Backend runtime |
 | TypeScript | Tip güvenliği |
 | Express | HTTP API geliştirme |
+| dotenv | Environment Variable yönetimi |
 | Git | Versiyon kontrolü |
 | GitHub | Remote repository |
 | Docker | Image ve container oluşturma |
-| Docker Network | Containerlar arası network iletişimi |
-| Docker Compose | Çoklu container uygulama yönetimi |
-| k6 | Load ve Stress Testing |
+| Docker Network | Container'lar arası iletişim |
+| Docker DNS | Container name resolution |
+| Docker Compose | Multi-container uygulama yönetimi |
+| k6 | Load, Stress ve Capacity Testing |
 | Kubernetes | Container orkestrasyonu |
-| Metrics Server | Kubernetes kaynak metriklerini toplama |
-| HPA | Otomatik ölçeklendirme |
+| ConfigMap | Kubernetes configuration yönetimi |
+| Metrics Server | CPU ve memory metric altyapısı |
+| HPA | CPU kullanımına göre otomatik yatay ölçekleme |
 
 ---
 
@@ -63,7 +96,7 @@ Bu repository boyunca aşağıdaki teknolojiler uygulamalı olarak öğrenilmekt
 
 Bu proje klasik bir CRUD uygulaması değildir.
 
-Özellikle şu yapılar şimdilik eklenmeyecektir:
+Şimdilik özellikle aşağıdaki yapılar eklenmemektedir:
 
 - Database
 - Authentication
@@ -73,27 +106,69 @@ Bu proje klasik bir CRUD uygulaması değildir.
 - Kafka
 - RabbitMQ
 - Message Queue
-- Socket
+- WebSocket
 - Karmaşık CRUD işlemleri
 - Kullanıcı yönetimi
 
-Çünkü bu repository'nin temel amacı iş geliştirmek değil, **Cloud Native backend geliştirme sürecini öğrenmektir.**
+Bunun nedeni repository'nin temel amacının business logic geliştirmek değil, **Cloud Native backend geliştirme sürecini öğrenmek** olmasıdır.
 
 İki küçük HTTP servisi üzerinden;
 
-- Katmanlı backend mimarisi
-- Docker image ve container yapısı
-- Docker Network
-- Docker DNS
-- Servisler arası HTTP iletişimi
-- Docker Compose
-- Healthcheck
-- Load Testing
-- Kubernetes
-- Metrics
-- Autoscaling
+```text
+Backend Architecture
+↓
+Containerization
+↓
+Multi-Service Communication
+↓
+Load Testing
+↓
+Kubernetes Orchestration
+↓
+Resource Metrics
+↓
+Autoscaling
+```
 
-konuları uygulamalı olarak öğrenilmektedir.
+akışı uygulamalı olarak öğrenilmektedir.
+
+---
+
+# Güncel Öğrenme Yol Haritası
+
+```text
+Git ve GitHub ✅
+        ↓
+Node.js ve TypeScript ✅
+        ↓
+Express ve Katmanlı Mimari ✅
+        ↓
+Service A ✅
+        ↓
+Docker Temelleri ✅
+        ↓
+Docker Network ✅
+        ↓
+Service B ✅
+        ↓
+Servisler Arası İletişim ✅
+        ↓
+Docker Compose ✅
+        ↓
+k6 Load Testing ✅
+        ↓
+Kubernetes ✅
+        ↓
+Metrics Server ✅
+        ↓
+Resource Requests / Limits ✅
+        ↓
+Horizontal Pod Autoscaler ✅
+        ↓
+k6 + HPA Load Test ✅
+        ↓
+Tek Pod vs Çok Pod vs HPA Performans Analizi ← Sıradaki
+```
 
 ---
 
@@ -103,37 +178,71 @@ konuları uygulamalı olarak öğrenilmektedir.
 nodejs-cloud-native-learning/
 │
 ├── Canonical/
-│   └── Learning_Path.md
+│   ├── Learning_Path.md
+│   └── Tekrar-stratejisi.md
+│
+├── deployments/
+│   ├── service-a-configmap.yaml
+│   ├── service-a-deployment.yaml
+│   ├── service-a-hpa.yaml
+│   ├── service-a-service.yaml
+│   ├── service-b-deployment.yaml
+│   └── service-b-service.yaml
 │
 ├── Journal/
 │   ├── Progress.md
+│   │
 │   └── Sessions/
-│
-├── Notes/
+│       ├── 2026-08-04-session-01.md
+│       ├── 2026-08-05-session-02.md
+│       ├── 2026-08-06-session-03.md
+│       ├── 2026-08-06-session-04.md
+│       ├── 2026-08-07-session-05.md
+│       ├── 2026-08-10-session-06.md
+│       └── 2026-08-11-session-07.md
 │
 ├── Review/
 │   ├── Flashcard.md
-│   ├── Questions.md
+│   ├── Mini_Exams
 │   ├── Mistakes.md
-│   └── Study_Strategy.md
-│
-├── deployments/
+│   └── Questions.md
 │
 ├── services/
 │   ├── service-a/
+│   │   ├── src/
+│   │   ├── dist/
+│   │   ├── .dockerignore
+│   │   ├── .env
+│   │   ├── Dockerfile
+│   │   ├── package.json
+│   │   ├── package-lock.json
+│   │   └── tsconfig.json
+│   │
 │   └── service-b/
+│       ├── src/
+│       ├── dist/
+│       ├── .dockerignore
+│       ├── .env
+│       ├── Dockerfile
+│       ├── package.json
+│       ├── package-lock.json
+│       └── tsconfig.json
 │
 ├── tests/
+│   ├── service-a-hello.js
+│   ├── service-a-work.js
+│   ├── service-a-work-capacity.js
+│   └── service-a-work-stress.js
 │
 ├── compose.yaml
+├── metrics-server.yaml
 ├── .gitignore
-├── README.md
-└── START_HERE.md
+└── README.md
 ```
 
 ---
 
-# Servis Mimarisi
+# Genel Sistem Mimarisi
 
 Proje iki bağımsız HTTP servisinden oluşmaktadır.
 
@@ -148,9 +257,9 @@ Service A
 Service B
 ```
 
-Service A ana servis olarak çalışır.
+Service A ana servis olarak çalışmaktadır.
 
-Service B ise Service A tarafından çağrılan ikinci servistir.
+Service B ise Service A'nın downstream dependency'sidir.
 
 ---
 
@@ -160,10 +269,14 @@ Service B ise Service A tarafından çağrılan ikinci servistir.
 
 Service A:
 
-- HTTP isteklerini karşılar.
-- Health ve hello endpointlerini sağlar.
-- Kontrollü CPU workload oluşturur.
+- HTTP request'lerini karşılar.
+- Health endpoint'i sağlar.
+- Basit hello endpoint'i sağlar.
+- Kontrollü CPU-bound workload oluşturur.
 - Service B'ye HTTP isteği gönderir.
+- Kubernetes üzerinde birden fazla replica ile çalışabilir.
+- Metrics Server tarafından CPU ve memory kullanımı izlenebilir.
+- HPA tarafından otomatik ölçeklenebilir.
 
 ## Port
 
@@ -177,6 +290,8 @@ Service A:
 service-a/
 │
 ├── src/
+│   ├── config/
+│   │
 │   ├── handlers/
 │   │   ├── health.handler.ts
 │   │   ├── hello.handler.ts
@@ -201,16 +316,29 @@ service-a/
 └── tsconfig.json
 ```
 
-Bu mimaride sorumluluklar birbirinden ayrılmıştır.
+## Katmanların Sorumlulukları
 
-- `server.ts` → HTTP sunucusunu başlatır.
-- `app.ts` → Express uygulamasını oluşturur.
-- `routes` → Endpoint yönlendirmelerini içerir.
-- `handlers` → HTTP request ve response işlemlerini yönetir.
-- `workload` → HTTP katmanından bağımsız CPU workload mantığını içerir.
-- `Dockerfile` → Docker image'ının nasıl oluşturulacağını tanımlar.
-- `.dockerignore` → Docker build context dışında bırakılacak dosyaları belirler.
-- `dist` → TypeScript kaynak kodunun derlenmiş JavaScript çıktısını içerir.
+```text
+server.ts
+→ HTTP sunucusunu başlatır.
+
+app.ts
+→ Express uygulamasını oluşturur.
+
+routes/
+→ Endpoint routing işlemlerini içerir.
+
+handlers/
+→ HTTP request ve response işlemlerini yönetir.
+
+workload/
+→ HTTP katmanından bağımsız CPU workload mantığını içerir.
+
+config/
+→ Uygulama configuration işlemlerini içerir.
+```
+
+Bu yapı sayesinde HTTP katmanı ile workload mantığı birbirinden ayrılmıştır.
 
 ---
 
@@ -219,18 +347,83 @@ Bu mimaride sorumluluklar birbirinden ayrılmıştır.
 | Endpoint | Açıklama |
 | --- | --- |
 | `GET /health` | Servisin çalışır durumda olduğunu doğrular |
-| `GET /hello` | Basit bir karşılama cevabı döndürür |
-| `GET /work` | CPU ağırlıklı işlem gerçekleştirerek kontrollü yük oluşturur |
+| `GET /hello` | Basit karşılama cevabı döndürür |
+| `GET /work` | CPU-bound workload oluşturur |
 | `GET /call-service-b` | Service B'nin `/hello` endpoint'ini çağırır |
 
-`/work` endpoint'i ilerleyen aşamalarda;
+---
 
-- k6
-- Kubernetes
-- Metrics Server
-- Horizontal Pod Autoscaler
+# `/health`
 
-testlerinde kullanılacaktır.
+```text
+GET /health
+```
+
+Service A'nın sağlık durumunu kontrol etmek için kullanılır.
+
+Kubernetes ortamında aynı endpoint:
+
+```text
+Readiness Probe
++
+Liveness Probe
+```
+
+tarafından kullanılmaktadır.
+
+---
+
+# `/hello`
+
+```text
+GET /hello
+```
+
+Service A'nın temel HTTP davranışını test etmek için kullanılan basit endpoint'tir.
+
+Özellikle ilk k6 testlerinde düşük maliyetli endpoint olarak kullanılmıştır.
+
+---
+
+# `/work`
+
+```text
+GET /work
+```
+
+CPU-bound işlem gerçekleştirir.
+
+Bu endpoint projenin performans ve autoscaling deneylerinde önemli rol oynar.
+
+Kullanıldığı alanlar:
+
+```text
+k6 Load Test
+↓
+Stress Test
+↓
+Capacity Test
+↓
+Kubernetes CPU Metrics
+↓
+Metrics Server
+↓
+Horizontal Pod Autoscaler
+```
+
+CPU-bound workload sayesinde Node.js Event Loop üzerinde saturation davranışı gözlemlenebilmektedir.
+
+---
+
+# `/call-service-b`
+
+```text
+GET /call-service-b
+```
+
+Service A'nın Service B ile HTTP üzerinden haberleşmesini sağlar.
+
+Service A içerisinde Node.js `fetch()` API'si kullanılmaktadır.
 
 ---
 
@@ -240,8 +433,9 @@ testlerinde kullanılacaktır.
 
 Service B:
 
-- Service A'dan gelen HTTP isteklerini karşılar.
-- Basit health ve hello cevapları döndürür.
+- Service A'dan gelen HTTP request'lerini karşılar.
+- Health endpoint'i sağlar.
+- Hello endpoint'i sağlar.
 - Service A'nın downstream dependency'si olarak kullanılır.
 
 ## Port
@@ -281,81 +475,20 @@ service-b/
 
 | Endpoint | Açıklama |
 | --- | --- |
-| `GET /health` | Service B'nin çalışır durumda olduğunu doğrular |
-| `GET /hello` | Service B adına basit bir response döndürür |
-
----
-
-# Service-to-Service Communication
-
-Service A, Service B'ye Node.js `fetch()` API'si üzerinden HTTP isteği gönderir.
-
-Manuel Docker ortamında Service B adresi:
-
-```text
-http://service-b-container:3001
-```
-
-Docker Compose ortamında ise:
-
-```text
-http://service-b:3001
-```
-
-olarak kullanılır.
-
-Bunun nedeni Compose service name olan:
-
-```text
-service-b
-```
-
-değerinin Compose network içinde DNS hostname olarak kullanılabilmesidir.
-
-İletişim akışı:
-
-```text
-Client
-   │
-   │ GET localhost:3000/call-service-b
-   ▼
-Service A
-   │
-   │ fetch()
-   │
-   │ SERVICE_B_URL
-   ▼
-Docker Compose Network
-   │
-   │ Docker DNS
-   ▼
-service-b:3001
-   │
-   │ GET /hello
-   ▼
-Service B
-   │
-   ▼
-JSON Response
-   │
-   ▼
-Service A
-   │
-   ▼
-Client
-```
+| `GET /health` | Service B'nin sağlık durumunu kontrol eder |
+| `GET /hello` | Service B adına basit response döndürür |
 
 ---
 
 # Environment Variables
 
-Service A yaklaşık olarak aşağıdaki environment variable'ları kullanır:
+Service A yaklaşık olarak aşağıdaki configuration değerlerini kullanır:
 
 ```env
 PORT=3000
 SERVICE_NAME=service-a
 APP_VERSION=1.0.0
-SERVICE_B_URL=http://service-b-container:3001
+SERVICE_B_URL=...
 ```
 
 Service B:
@@ -366,176 +499,169 @@ SERVICE_NAME=service-b
 APP_VERSION=1.0.0
 ```
 
-Docker Compose ortamında Service A için `SERVICE_B_URL` değeri runtime sırasında override edilir:
-
-```yaml
-environment:
-  SERVICE_B_URL: http://service-b:3001
-```
-
-Böylece kaynak kod değiştirilmeden farklı çalışma ortamlarında farklı servis adresleri kullanılabilir.
+Environment Variable kullanımı sayesinde servis adresleri kaynak kod içerisinde hard-code edilmez.
 
 ---
 
-# Projeyi Yerel Ortamda Çalıştırma
+# Service-to-Service Communication
 
-Service A:
+## Docker Ortamı
 
-```bash
-cd services/service-a
-npm install
-npm run dev
-```
-
-Service A varsayılan olarak:
+Manuel Docker kullanımında Service B adresi:
 
 ```text
-http://localhost:3000
+http://service-b-container:3001
 ```
 
-adresinde çalışır.
+şeklinde kullanılabilir.
 
-Service B:
-
-```bash
-cd services/service-b
-npm install
-npm run dev
-```
-
-Service B varsayılan olarak:
+Akış:
 
 ```text
-http://localhost:3001
-```
-
-adresinde çalışır.
-
----
-
-# Docker ile Manuel Çalıştırma
-
-## Service A
-
-Service A klasörüne geçin:
-
-```bash
-cd services/service-a
-```
-
-Image oluşturun:
-
-```bash
-docker buildx build --load -t service-a:1.1 .
-```
-
-Container oluşturup çalıştırın:
-
-```bash
-docker run -d \
-  --name service-a-container \
-  -p 3000:3000 \
-  service-a:1.1
+Service A
+↓
+Docker DNS
+↓
+service-b-container
+↓
+Service B
 ```
 
 ---
 
-## Service B
+# Docker Compose Ortamı
 
-Service B klasörüne geçin:
+Docker Compose ortamında:
 
-```bash
-cd services/service-b
+```text
+http://service-b:3001
 ```
 
-Image oluşturun:
+kullanılır.
 
-```bash
-docker buildx build --load -t service-b:1.0 .
+Buradaki:
+
+```text
+service-b
 ```
 
-Container oluşturup çalıştırın:
+Compose service name'dir.
 
-```bash
-docker run -d \
-  --name service-b-container \
-  -p 3001:3001 \
-  service-b:1.0
+Compose tarafından oluşturulan network içerisinde DNS hostname olarak kullanılabilir.
+
+Akış:
+
+```text
+Service A
+↓
+SERVICE_B_URL
+↓
+service-b:3001
+↓
+Docker DNS
+↓
+Service B
 ```
 
 ---
 
-# Docker Container Komutları
+# Kubernetes Ortamı
 
-Çalışan container'ları görüntülemek:
+Kubernetes tarafında Service A yine:
 
-```bash
-docker ps
+```text
+http://service-b:3001
 ```
 
-Tüm container'ları görüntülemek:
+adresini kullanır.
 
-```bash
-docker ps -a
+Ancak burada `service-b` artık Docker Compose service name değil, Kubernetes Service adıdır.
+
+Akış:
+
+```text
+Service A Pod
+↓
+SERVICE_B_URL
+↓
+http://service-b:3001
+↓
+Kubernetes DNS
+↓
+service-b ClusterIP Service
+↓
+Service B Pod
 ```
 
-Logları görüntülemek:
+Bu sayede Service A doğrudan Service B Pod IP'sini bilmek zorunda değildir.
 
-```bash
-docker logs <container-name>
+---
+
+# Docker
+
+Her iki servis de Docker image olarak paketlenebilir.
+
+Temel yapı:
+
+```text
+Source Code
+↓
+Dockerfile
+↓
+Docker Image
+↓
+Docker Container
 ```
 
-Container durdurmak:
+Docker sayesinde uygulama çalışma ortamı standart hale getirilmiştir.
 
-```bash
-docker stop <container-name>
+---
+
+# Service A Dockerfile Mantığı
+
+Temel build akışı:
+
+```text
+Base Image
+↓
+WORKDIR
+↓
+package.json
+↓
+npm install
+↓
+Source Code
+↓
+npm run build
+↓
+npm start
 ```
 
-Container yeniden başlatmak:
+Docker layer ve build cache mantığı öğrenilmiştir.
 
-```bash
-docker start <container-name>
-```
-
-Container silmek:
-
-```bash
-docker rm <container-name>
-```
+Package dosyalarının kaynak koddan önce kopyalanması sayesinde dependency layer'ı daha etkili cache edilebilir.
 
 ---
 
 # Docker Network
 
-Manuel Docker kullanımında servislerin iletişimi için custom bridge network oluşturuldu.
+Manuel Docker kullanımında:
 
-```bash
-docker network create cloud-native-network
+```text
+cloud-native-network
 ```
 
-Network'leri görüntülemek:
+adlı custom bridge network oluşturulmuştur.
 
-```bash
-docker network ls
-```
-
-Network detaylarını incelemek:
-
-```bash
-docker network inspect cloud-native-network
-```
-
-Aynı custom network üzerindeki container'lar Docker DNS sayesinde birbirlerine isim üzerinden ulaşabilir.
-
-Örnek:
+Aynı network üzerindeki container'lar Docker DNS sayesinde container name üzerinden birbirlerine erişebilir.
 
 ```text
 service-a-container
-        ↓
+↓
 service-b-container:3001
 ```
 
-Container IP adresleri dinamik olabileceği için servis iletişiminde IP adresi kod içine sabitlenmez.
+Pod veya container IP adreslerini doğrudan kod içine yazmak yerine DNS tabanlı isim kullanımı tercih edilmektedir.
 
 ---
 
@@ -547,180 +673,86 @@ Repository kökünde:
 compose.yaml
 ```
 
-dosyası bulunmaktadır.
+bulunmaktadır.
 
-Service A ve Service B bu dosya üzerinden birlikte yönetilmektedir.
+Service A ve Service B aynı Compose projesi içerisinde yönetilmektedir.
 
-Güncel yapı yaklaşık olarak:
+Genel mantık:
 
-```yaml
-services:
-  service-b:
-    build:
-      context: ./services/service-b
-    ports:
-      - "3001:3001"
-    env_file:
-      - ./services/service-b/.env
-    healthcheck:
-      test:
-        [
-          "CMD",
-          "node",
-          "-e",
-          "fetch('http://localhost:3001/health').then(r => { if (!r.ok) process.exit(1) }).catch(() => process.exit(1))"
-        ]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 5s
-
-  service-a:
-    build:
-      context: ./services/service-a
-    ports:
-      - "3000:3000"
-    env_file:
-      - ./services/service-a/.env
-    environment:
-      SERVICE_B_URL: http://service-b:3001
-    depends_on:
-      service-b:
-        condition: service_healthy
+```text
+Docker Compose
+│
+├── service-a
+│
+└── service-b
+     │
+     └── healthcheck
 ```
+
+Compose sayesinde:
+
+- build
+- environment
+- network
+- ports
+- healthcheck
+- startup dependency
+
+tek dosya üzerinden yönetilebilir.
 
 ---
 
-# Compose Network ve DNS
+# Docker Compose Network
 
-Docker Compose proje için otomatik olarak default network oluşturur.
+Compose otomatik olarak default network oluşturur.
 
-Bu projede oluşturulan network:
+Bu projede:
 
 ```text
 nodejs-cloud-native-learning_default
 ```
 
-Servisler aynı network üzerinde service name ile birbirlerine ulaşabilir.
+network'ü kullanılmıştır.
+
+Servisler birbirlerine service name ile erişebilir.
 
 ```text
-Service A
-   ↓
-service-b:3001
-   ↓
+service-a
+↓
 Docker DNS
-   ↓
-Service B
-```
-
-Service B için:
-
-```yaml
-ports:
-  - "3001:3001"
-```
-
-tanımı Service A → Service B iletişimi için zorunlu değildir.
-
-Bu mapping, geliştirme ortamında host bilgisayardan:
-
-```text
-http://localhost:3001
-```
-
-adresine erişebilmek için tutulmaktadır.
-
----
-
-# Docker Compose Komutları
-
-Compose yapılandırmasını doğrulamak:
-
-```bash
-docker compose config
-```
-
-Servisleri build ederek çalıştırmak:
-
-```bash
-docker compose up --build
-```
-
-Servisleri arka planda çalıştırmak:
-
-```bash
-docker compose up -d
-```
-
-Servis durumlarını görüntülemek:
-
-```bash
-docker compose ps
-```
-
-Logları görüntülemek:
-
-```bash
-docker compose logs
-```
-
-Logları gerçek zamanlı takip etmek:
-
-```bash
-docker compose logs -f
-```
-
-Compose servislerini ve default network'ü kaldırmak:
-
-```bash
-docker compose down
+↓
+service-b
 ```
 
 ---
 
-# Healthcheck
+# Docker Compose Healthcheck
 
-Service B için Compose healthcheck tanımlanmıştır.
+Service B için healthcheck tanımlanmıştır.
 
-Healthcheck:
+Kontrol edilen endpoint:
 
 ```text
 http://localhost:3001/health
 ```
 
-endpoint'ini Service B container'ının içinden kontrol eder.
-
-Başarılı healthcheck:
+Healthcheck container içerisinden çalışmaktadır.
 
 ```text
-exit code 0
+Container Up
+≠
+Application Healthy
 ```
 
-Başarısız healthcheck:
-
-```text
-exit code 1
-```
-
-üretir.
-
-Container'ın `Up` olması ile uygulamanın `healthy` olması farklı kavramlardır.
-
-```text
-Up
-→ Container process'i çalışıyor.
-
-healthy
-→ Uygulama healthcheck'i başarıyla geçiyor.
-```
+ayrımı bu aşamada öğrenilmiştir.
 
 ---
 
-# Service Dependency
+# Docker Compose Dependency
 
 Service A, Service B'ye bağımlıdır.
 
-Bu nedenle Compose içinde:
+Compose tarafında:
 
 ```yaml
 depends_on:
@@ -734,171 +766,1315 @@ Startup akışı:
 
 ```text
 Service B başlar
-        ↓
+↓
 Healthcheck başarılı olur
-        ↓
-Service B healthy olur
-        ↓
+↓
+Service B healthy
+↓
 Service A başlar
 ```
 
 Bu yapı startup dependency sağlar.
 
-Service B sonradan çökerse `depends_on` Service A'yı otomatik olarak durdurmaz.
+---
 
-Runtime failure handling ilerleyen aşamalarda ayrıca ele alınabilir.
+# k6 Load Testing
+
+k6 ile Service A üzerinde farklı performans testleri gerçekleştirilmiştir.
+
+Mevcut test dosyaları:
+
+```text
+tests/
+├── service-a-hello.js
+├── service-a-work.js
+├── service-a-work-capacity.js
+└── service-a-work-stress.js
+```
 
 ---
 
-# Öğrenme Yol Haritası
+# `service-a-hello.js`
 
-| Konu | Durum |
-| --- | :---: |
-| Git | ✅ |
-| GitHub | ✅ |
-| Node.js | ✅ |
-| TypeScript | ✅ |
-| Express | ✅ |
-| Katmanlı Mimari | ✅ |
-| Environment Variables | ✅ |
-| Docker | ✅ |
-| Docker Network | ✅ |
-| Docker DNS | ✅ |
-| Service B | ✅ |
-| Service-to-Service Communication | ✅ |
-| Docker Compose | ✅ |
-| Healthcheck | ✅ |
-| k6 | ⏳ |
-| Kubernetes | ⏳ |
-| Metrics Server | ⏳ |
-| Horizontal Pod Autoscaler | ⏳ |
+Basit ve düşük maliyetli endpoint performansını ölçmek için kullanılmıştır.
 
----
+Test endpoint'i:
 
-# Mevcut Durum
+```text
+GET /hello
+```
 
-Şu ana kadar tamamlanan çalışmalar:
+Bu test ile:
 
-- Repository ve Git çalışma düzeni oluşturuldu.
-- GitHub remote repository bağlantısı kuruldu.
-- Node.js ve TypeScript proje yapısı oluşturuldu.
-- Express kurulumu tamamlandı.
-- Environment Variable desteği eklendi.
-- `app.ts` ve `server.ts` sorumlulukları ayrıldı.
-- Route ve Handler mimarisi oluşturuldu.
-- Workload katmanı oluşturuldu.
-- Service A geliştirildi.
-- `GET /health` endpoint'i geliştirildi.
-- `GET /hello` endpoint'i geliştirildi.
-- `GET /work` endpoint'i geliştirildi.
-- Service A için Dockerfile oluşturuldu.
-- `.dockerignore` kullanıldı.
-- Docker layer ve build cache mantığı öğrenildi.
-- Docker image ve container yaşam döngüsü uygulandı.
-- Custom Docker Network oluşturuldu.
-- Docker DNS ve container name resolution öğrenildi.
-- Service B geliştirildi.
-- Service B container içinde çalıştırıldı.
-- Service A ile Service B aynı Docker network'e bağlandı.
-- Service A → Service B HTTP iletişimi oluşturuldu.
-- Node.js `fetch()` API'si kullanıldı.
-- `SERVICE_B_URL` environment variable olarak yönetildi.
-- Docker Compose yapılandırması oluşturuldu.
-- Service A ve Service B tek Compose projesinde çalıştırıldı.
-- Compose default network yapısı incelendi.
-- Service name üzerinden DNS çözümlemesi doğrulandı.
-- `docker compose config` kullanıldı.
-- `docker compose up --build` kullanıldı.
-- `docker compose ps` ve `docker compose logs` kullanıldı.
-- `/health`, `/hello` ve `/call-service-b` endpointleri Compose ortamında doğrulandı.
-- Docker healthcheck eklendi.
-- Service B'nin `healthy` durumu doğrulandı.
-- `depends_on` ve `condition: service_healthy` kullanıldı.
-- Container startup ile application readiness arasındaki fark öğrenildi.
-- Compose startup dependency davranışı doğrulandı.
-- Flashcard, Questions ve Mistakes dokümantasyonları güncellendi.
+- Virtual User
+- Iteration
+- Throughput
+- Latency
+- P90
+- P95
+- Failure Rate
+
+kavramları öğrenilmiştir.
 
 ---
 
-# Dokümantasyon
+# `service-a-work.js`
 
-Repository yalnızca koddan oluşmamaktadır.
+CPU-bound `/work` endpoint'inin temel yük testi için kullanılmıştır.
 
-Öğrenme süreci aşağıdaki alanlarda kayıt altına alınmaktadır.
+Bu test ile `/hello` ve `/work` endpoint'leri arasındaki performans farkı gözlemlenmiştir.
 
-- `Canonical/` → Kısa ve kalıcı roadmap
-- `Journal/Progress.md` → Güncel proje ilerlemesi
-- `Journal/Sessions/` → Tarih bazlı çalışma kayıtları
-- `Notes/` → Konu bazlı teknik notlar
-- `Review/Flashcard.md` → Hızlı tekrar kartları
-- `Review/Questions.md` → Açık uçlu teknik sorular
-- `Review/Mistakes.md` → Yapılan hatalar ve çıkarılan dersler
-- `Review/Study_Strategy.md` → Çalışma ve tekrar stratejisi
+---
+
+# `service-a-work-stress.js`
+
+Kademeli VU artışı ile stress test gerçekleştirmek için kullanılır.
+
+Örnek yapı:
+
+```text
+10 VU
+↓
+50 VU
+↓
+100 VU
+↓
+0 VU
+```
+
+Bu test HPA davranışını tetiklemek için de kullanılmıştır.
+
+---
+
+# `service-a-work-capacity.js`
+
+Service A'nın kapasite sınırını anlamak için kullanılmıştır.
+
+Testler:
+
+```text
+1 VU
+2 VU
+3 VU
+4 VU
+5 VU
+10 VU
+20 VU
+40 VU
+80 VU
+```
+
+seviyelerinde gerçekleştirilmiştir.
+
+---
+
+# Benchmark Results
+
+| VU | Req/s | Avg | P95 |
+| ---: | ---: | ---: | ---: |
+| 1 | 9.57 | 104 ms | 106 ms |
+| 2 | 9.89 | 200 ms | 204 ms |
+| 3 | 9.86 | 300 ms | 415 ms |
+| 4 | 9.86 | 399 ms | 615 ms |
+| 5 | 9.84 | 497 ms | 812 ms |
+| 10 | 9.85 | 967 ms | 1.82 s |
+| 20 | 9.73 | 1.88 s | 9.74 s |
+| 40 | 9.82 | 3.48 s | 13.21 s |
+| 80 | 9.84 | 6.30 s | 17.12 s |
+
+---
+
+# Capacity Analysis
+
+Capacity test sonucunda:
+
+- Service A yaklaşık `10 request/s` işleyebildi.
+- Virtual User sayısı arttığında throughput belirgin şekilde artmadı.
+- Throughput yaklaşık aynı seviyede kalırken latency yükseldi.
+- P95 değeri concurrency arttıkça ciddi şekilde yükseldi.
+- Request'ler kuyrukta daha uzun süre beklemeye başladı.
+- CPU-bound workload Node.js Event Loop üzerinde saturation oluşturdu.
+
+Temel davranış:
+
+```text
+Concurrency ↑
+↓
+CPU Saturation
+↓
+Throughput ≈ Sabit
+↓
+Latency ↑
+```
+
+Bu değerler Kubernetes öncesi performans baseline'ı olarak kullanılmıştır.
+
+---
+
+# Kubernetes
+
+Service A ve Service B Kubernetes üzerinde çalıştırılmaktadır.
+
+Kubernetes tarafında kullanılan temel kaynaklar:
+
+```text
+Deployment
+ReplicaSet
+Pod
+Service
+ConfigMap
+HPA
+```
+
+---
+
+# Kubernetes Cluster
+
+Local development ortamında Kubernetes cluster kullanılmaktadır.
+
+Genel yapı:
+
+```text
+Kubernetes Cluster
+│
+├── Control Plane Node
+│
+└── Worker Node
+```
+
+Uygulama Pod'ları Worker Node üzerinde çalışmaktadır.
+
+---
+
+# Deployment
+
+Service A ve Service B için ayrı Deployment kaynakları bulunmaktadır.
+
+Deployment'ın temel görevi:
+
+```text
+Desired State
+```
+
+tanımlamaktır.
+
+Örneğin:
+
+```text
+Service A
+replicas: 2
+```
+
+ise Kubernetes 2 Service A Pod'u çalıştırmaya çalışır.
+
+---
+
+# Deployment → ReplicaSet → Pod
+
+Temel ilişki:
+
+```text
+Deployment
+↓
+ReplicaSet
+↓
+Pod
+↓
+Container
+```
+
+Deployment desired state'i yönetir.
+
+ReplicaSet istenen replica sayısını korur.
+
+Pod uygulamanın çalışan instance'ıdır.
+
+Container ise Pod içerisindeki uygulama process'ini çalıştırır.
+
+---
+
+# Kubernetes Self-Healing
+
+Bir Pod silindiğinde ReplicaSet desired state'i tekrar sağlamak için yeni Pod oluşturabilir.
+
+Örneğin:
+
+```text
+Desired = 2 Pod
+
+Current = 1 Pod
+↓
+ReplicaSet
+↓
+Yeni Pod
+↓
+Current = 2 Pod
+```
+
+Bu davranış Kubernetes Self-Healing mekanizmasının temel örneklerinden biridir.
+
+---
+
+# Kubernetes Service
+
+Service A ve Service B için ClusterIP Service kullanılmaktadır.
+
+Service:
+
+```text
+Stabil ağ erişim noktası
+```
+
+sağlar.
+
+Pod IP'leri değişebilir.
+
+Service adı ve ClusterIP ise uygulama communication için daha stabil abstraction sağlar.
+
+---
+
+# Kubernetes DNS
+
+Service'ler isimleri üzerinden çözümlenebilir.
+
+Örneğin:
+
+```text
+service-b
+```
+
+Kubernetes DNS tarafından ilgili Service'e çözümlenir.
+
+Bu nedenle Service A:
+
+```text
+http://service-b:3001
+```
+
+üzerinden Service B'ye erişebilir.
+
+---
+
+# ConfigMap
+
+Service A'nın Service B adresi ConfigMap üzerinden yönetilmektedir.
+
+Dosya:
+
+```text
+deployments/service-a-configmap.yaml
+```
+
+Configuration akışı:
+
+```text
+ConfigMap
+↓
+SERVICE_B_URL
+↓
+configMapKeyRef
+↓
+Container Environment Variable
+↓
+process.env.SERVICE_B_URL
+```
+
+Bu sayede configuration application image'dan ayrılmıştır.
+
+---
+
+# Readiness Probe
+
+Service A için Readiness Probe bulunmaktadır.
+
+Endpoint:
+
+```text
+GET /health
+```
+
+Temel amacı:
+
+```text
+Pod trafik almaya hazır mı?
+```
+
+sorusuna cevap vermektir.
+
+Readiness başarısız olduğunda Pod çalışıyor olsa bile Service tarafından trafik almaması sağlanabilir.
+
+---
+
+# Liveness Probe
+
+Service A için Liveness Probe bulunmaktadır.
+
+Endpoint:
+
+```text
+GET /health
+```
+
+Temel amacı:
+
+```text
+Container sağlıklı şekilde çalışmaya devam ediyor mu?
+```
+
+sorusuna cevap vermektir.
+
+Tekrarlayan failure durumunda container restart edilebilir.
+
+---
+
+# Running ve Ready
+
+Önemli ayrım:
+
+```text
+Running
+≠
+Ready
+```
+
+Örneğin:
+
+```text
+0/1 Running
+```
+
+container process'inin çalıştığını fakat Pod'un henüz Ready olmadığını gösterebilir.
+
+```text
+1/1 Running
+```
+
+ise Pod'un Ready olduğunu gösterir.
+
+---
+
+# Metrics Server
+
+Kubernetes cluster'a Metrics Server kurulmuştur.
+
+Metrics Server:
+
+```text
+CPU
+Memory
+```
+
+resource metric'lerini Kubernetes tarafından kullanılabilir hale getirir.
+
+Temel veri akışı:
+
+```text
+Pod / Container
+↓
+Node
+↓
+Kubelet
+↓
+Metrics Server
+↓
+Metrics API
+↓
+kubectl top / HPA
+```
+
+Metrics Server tam kapsamlı monitoring sistemi değildir.
+
+Temel amacı resource metric altyapısı sağlamaktır.
+
+---
+
+# `kubectl top pods`
+
+Pod CPU ve memory kullanımı:
+
+```powershell
+kubectl top pods
+```
+
+ile görüntülenmektedir.
+
+Örnek idle değerler:
+
+```text
+service-a Pod 1 → yaklaşık 3m CPU
+service-a Pod 2 → yaklaşık 3m CPU
+service-b       → yaklaşık 1m CPU
+```
+
+---
+
+# CPU Millicore
+
+Kubernetes CPU metric'lerinde:
+
+```text
+m
+```
+
+millicore anlamına gelir.
+
+```text
+1000m = 1 CPU Core
+500m  = 0.5 CPU Core
+100m  = 0.1 CPU Core
+```
+
+Service A `/work` yükü altında bir Pod'da yaklaşık:
+
+```text
+402m
+```
+
+CPU kullanımı gözlemlenmiştir.
+
+---
+
+# `kubectl top nodes`
+
+Node resource kullanımı:
+
+```powershell
+kubectl top nodes
+```
+
+ile görüntülenmiştir.
+
+Örnek:
+
+```text
+desktop-control-plane → 759m CPU
+desktop-worker        → 192m CPU
+```
+
+Pod ve Node resource metric seviyelerinin farklı olduğu öğrenilmiştir.
+
+---
+
+# Kubernetes Resource Management
+
+Service A Deployment üzerinde resource request ve limit değerleri tanımlanmıştır.
+
+```yaml
+resources:
+  requests:
+    cpu: "100m"
+    memory: "64Mi"
+  limits:
+    cpu: "500m"
+    memory: "256Mi"
+```
+
+---
+
+# Request, Usage ve Limit
+
+Temel ayrım:
+
+```text
+Request
+→ Kubernetes'e bildirilen resource ihtiyacı
+
+Usage
+→ Container'ın gerçek resource tüketimi
+
+Limit
+→ Container'ın kullanabileceği resource üst sınırı
+```
+
+Request gerçek kullanım değildir.
+
+Örneğin:
+
+```text
+CPU Request = 100m
+CPU Usage   = 3m
+```
+
+olabilir.
+
+---
+
+# Horizontal Scaling
+
+Horizontal Scaling:
+
+```text
+Instance sayısını değiştirir.
+```
+
+Örneğin:
+
+```text
+2 Pod
+↓
+3 Pod
+↓
+5 Pod
+```
+
+Vertical Scaling ise mevcut instance'ın CPU veya memory kapasitesini değiştirmeyi ifade eder.
+
+---
+
+# Horizontal Pod Autoscaler
+
+Service A için HPA kullanılmaktadır.
+
+Dosya:
+
+```text
+deployments/service-a-hpa.yaml
+```
+
+Güncel yapı:
+
+```text
+Target
+→ Deployment/service-a
+
+Metric
+→ CPU
+
+Target CPU
+→ 50%
+
+Minimum Replica
+→ 2
+
+Maximum Replica
+→ 5
+```
+
+---
+
+# HPA Manifesti
+
+```yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+
+metadata:
+  name: service-a-hpa
+
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: service-a
+
+  minReplicas: 2
+  maxReplicas: 5
+
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50
+```
+
+---
+
+# CPU Utilization ve Request
+
+Service A:
+
+```text
+CPU Request = 100m
+```
+
+HPA target:
+
+```text
+50%
+```
+
+Örneğin:
+
+```text
+CPU Usage = 50m
+```
+
+ise yaklaşık:
+
+```text
+50m / 100m × 100
+=
+50%
+```
+
+CPU utilization oluşur.
+
+Utilization değeri `%100` üzerine çıkabilir.
+
+Örneğin:
+
+```text
+CPU Request = 100m
+CPU Usage   = 245m
+```
+
+ise yaklaşık:
+
+```text
+245%
+```
+
+utilization görülebilir.
+
+---
+
+# HPA Çalışma Akışı
+
+```text
+Service A Pods
+↓
+CPU Usage
+↓
+Kubelet
+↓
+Metrics Server
+↓
+Metrics API
+↓
+HPA
+↓
+Current CPU / Target CPU
+↓
+Desired Replica Count
+↓
+Deployment
+↓
+ReplicaSet
+↓
+Pods
+```
+
+HPA doğrudan Pod oluşturmaz.
+
+Deployment'ın desired replica sayısını etkiler.
+
+---
+
+# k6 ile HPA Testi
+
+`service-a-work-stress.js` kullanılarak Service A üzerinde CPU yükü oluşturulmuştur.
+
+Test sırasında HPA canlı olarak takip edilmiştir.
+
+Gözlemlenen değerlerden bazıları:
+
+```text
+cpu: 1%/50%
+replicas: 2
+```
+
+Daha sonra:
+
+```text
+cpu: 67%/50%
+replicas: 2
+```
+
+Daha yoğun yükte:
+
+```text
+cpu: 245%/50%
+replicas: 3
+```
+
+Ardından:
+
+```text
+replicas: 5
+```
+
+gözlemlenmiştir.
+
+---
+
+# HPA Scale-Up
+
+Gerçek scale-up:
+
+```text
+2 Pod
+↓
+3 Pod
+↓
+5 Pod
+```
+
+şeklinde gerçekleşmiştir.
+
+Akış:
+
+```text
+k6 Load
+↓
+CPU Usage ↑
+↓
+Metrics Server
+↓
+HPA Target aşılır
+↓
+Deployment replica ↑
+↓
+Yeni Pod'lar
+```
+
+---
+
+# Yeni Pod Lifecycle
+
+HPA scale-up sırasında yeni Pod'larda:
+
+```text
+Pending
+↓
+Running 0/1
+↓
+Running 1/1
+```
+
+durumları gözlemlenmiştir.
+
+Bu sayede autoscaling ile readiness davranışı birlikte incelenmiştir.
+
+---
+
+# HPA Scale-Down
+
+Load test tamamlandıktan sonra CPU kullanımı düşmüştür.
+
+HPA replica sayısını hemen azaltmamıştır.
+
+Scale-down stabilization sonrasında Service A tekrar minimum replica seviyesine dönmüştür.
+
+```text
+5 Pod
+↓
+CPU Usage düşer
+↓
+Stabilization
+↓
+Replica sayısı azalır
+↓
+2 Pod
+```
+
+---
+
+# HPA Conditions
+
+`kubectl describe hpa service-a-hpa` ile HPA condition'ları incelenmiştir.
+
+Önemli condition'lar:
+
+```text
+AbleToScale
+ScalingActive
+ScalingLimited
+```
+
+Örnek durumlar:
+
+```text
+AbleToScale=True
+ScalingActive=True
+ScalingLimited=False
+```
+
+---
+
+# HPA Events
+
+Scaling geçmişi HPA Events üzerinden incelenmiştir.
+
+Önemli event:
+
+```text
+SuccessfulRescale
+```
+
+Scale-up nedeni:
+
+```text
+cpu resource utilization above target
+```
+
+Scale-down nedeni:
+
+```text
+All metrics below target
+```
+
+olarak gözlemlenmiştir.
+
+---
+
+# Güncel Cloud Native Mimari
+
+```text
+                        k6
+                         │
+                         ▼
+                  Service A Service
+                         │
+                ┌────────┴────────┐
+                ▼                 ▼
+         Service A Pod      Service A Pod
+                │                 │
+                └────────┬────────┘
+                         │
+                         ▼
+                     CPU Usage
+                         │
+                         ▼
+                      Kubelet
+                         │
+                         ▼
+                  Metrics Server
+                         │
+                         ▼
+                        HPA
+                         │
+                         ▼
+                    Deployment
+                         │
+                         ▼
+                     ReplicaSet
+                         │
+                         ▼
+                  Service A Pods
+```
+
+Service communication:
+
+```text
+Service A Pods
+↓
+SERVICE_B_URL
+↓
+Kubernetes DNS
+↓
+service-b Service
+↓
+Service B Pod
+```
+
+---
+
+# Temel Kubernetes Komutları
+
+Node'ları görüntülemek:
+
+```powershell
+kubectl get nodes
+```
+
+Pod'ları görüntülemek:
+
+```powershell
+kubectl get pods
+```
+
+Deployment'ları görüntülemek:
+
+```powershell
+kubectl get deployments
+```
+
+Service'leri görüntülemek:
+
+```powershell
+kubectl get services
+```
+
+HPA'yı görüntülemek:
+
+```powershell
+kubectl get hpa
+```
+
+HPA detaylarını görüntülemek:
+
+```powershell
+kubectl describe hpa service-a-hpa
+```
+
+Pod CPU ve memory:
+
+```powershell
+kubectl top pods
+```
+
+Node CPU ve memory:
+
+```powershell
+kubectl top nodes
+```
+
+---
+
+# Kubernetes Manifestlerini Uygulama
+
+Service A Deployment:
+
+```powershell
+kubectl apply -f .\deployments\service-a-deployment.yaml
+```
+
+Service A Service:
+
+```powershell
+kubectl apply -f .\deployments\service-a-service.yaml
+```
+
+Service A ConfigMap:
+
+```powershell
+kubectl apply -f .\deployments\service-a-configmap.yaml
+```
+
+Service A HPA:
+
+```powershell
+kubectl apply -f .\deployments\service-a-hpa.yaml
+```
+
+Service B Deployment:
+
+```powershell
+kubectl apply -f .\deployments\service-b-deployment.yaml
+```
+
+Service B Service:
+
+```powershell
+kubectl apply -f .\deployments\service-b-service.yaml
+```
+
+---
+
+# Port Forward
+
+Host makineden Kubernetes içerisindeki Service A'ya geçici erişim için:
+
+```powershell
+kubectl port-forward service/service-a 3000:3000
+```
+
+kullanılabilir.
+
+Akış:
+
+```text
+localhost:3000
+↓
+kubectl port-forward
+↓
+service-a
+```
+
+Port Forward development ve debugging amacıyla kullanılır.
+
+Production exposure yöntemi değildir.
+
+---
+
+# Projeyi Yerel Ortamda Çalıştırma
+
+## Service A
+
+```powershell
+cd services/service-a
+npm install
+npm run dev
+```
+
+Adres:
+
+```text
+http://localhost:3000
+```
+
+## Service B
+
+```powershell
+cd services/service-b
+npm install
+npm run dev
+```
+
+Adres:
+
+```text
+http://localhost:3001
+```
+
+---
+
+# Docker Compose ile Çalıştırma
+
+Repository root:
+
+```powershell
+docker compose up --build
+```
+
+Arka planda:
+
+```powershell
+docker compose up -d
+```
+
+Durum:
+
+```powershell
+docker compose ps
+```
+
+Log:
+
+```powershell
+docker compose logs
+```
+
+Kapatmak:
+
+```powershell
+docker compose down
+```
+
+---
+
+# k6 Testlerini Çalıştırma
+
+Basit hello testi:
+
+```powershell
+k6 run .\tests\service-a-hello.js
+```
+
+Temel `/work` testi:
+
+```powershell
+k6 run .\tests\service-a-work.js
+```
+
+Stress testi:
+
+```powershell
+k6 run .\tests\service-a-work-stress.js
+```
+
+Capacity testi:
+
+```powershell
+k6 run .\tests\service-a-work-capacity.js
+```
+
+---
+
+# Dokümantasyon Yapısı
+
+Repository yalnızca uygulama kodundan oluşmamaktadır.
+
+Öğrenme süreci de düzenli olarak kaydedilmektedir.
+
+## `Canonical/`
+
+Kalıcı learning path ve tekrar stratejisini içerir.
+
+```text
+Canonical/
+├── Learning_Path.md
+└── Tekrar-stratejisi.md
+```
+
+## `Journal/`
+
+Projenin gerçek ilerleme geçmişini içerir.
+
+```text
+Journal/
+├── Progress.md
+└── Sessions/
+```
+
+Session dosyaları tarih bazlı çalışma kayıtlarıdır.
+
+## `Review/`
+
+Tekrar ve Active Recall materyallerini içerir.
+
+```text
+Review/
+├── Flashcard.md
+├── Mini_Exams
+├── Mistakes.md
+└── Questions.md
+```
+
+`Flashcard.md`
+
+→ Kısa tekrar kartları.
+
+`Questions.md`
+
+→ Açık uçlu teknik sorular.
+
+`Mistakes.md`
+
+→ Çalışma sırasında yapılan hatalar ve çıkarılan dersler.
+
+`Mini_Exams`
+
+→ Konu bazlı mini sınavlar.
+
+---
+
+# Güncel Durum
+
+Tamamlanan ana teknik aşamalar:
+
+```text
+Repository Setup ✅
+Git / GitHub ✅
+Node.js / TypeScript ✅
+Express ✅
+Service A ✅
+Docker ✅
+Docker Network ✅
+Service B ✅
+Service-to-Service Communication ✅
+Docker Compose ✅
+Healthcheck ✅
+k6 Load Testing ✅
+Capacity Analysis ✅
+Kubernetes ✅
+Deployment / ReplicaSet / Pod ✅
+Kubernetes Service / DNS ✅
+ConfigMap ✅
+Readiness Probe ✅
+Liveness Probe ✅
+Metrics Server ✅
+Resource Requests / Limits ✅
+Horizontal Pod Autoscaler ✅
+HPA Scale-Up ✅
+HPA Scale-Down ✅
+k6 + HPA Test ✅
+```
+
+---
+
+# Güncel Teknik Kazanımlar
+
+Bu repository ile şu anda aşağıdaki yapıları açıklayabilir ve uygulayabilir durumdayım:
+
+```text
+Node.js HTTP Service
+↓
+TypeScript
+↓
+Express Architecture
+↓
+Docker Image
+↓
+Docker Container
+↓
+Container Networking
+↓
+Docker Compose
+↓
+Service-to-Service HTTP Communication
+↓
+Load Testing
+↓
+CPU Saturation
+↓
+Kubernetes Deployment
+↓
+ReplicaSet
+↓
+Pod
+↓
+Service Discovery
+↓
+Configuration Management
+↓
+Health Probes
+↓
+Resource Metrics
+↓
+Resource Management
+↓
+Horizontal Autoscaling
+```
 
 ---
 
 # Sonraki Aşama
 
-Bir sonraki teknik aşama **k6 Load Testing** olacaktır.
-
-Bu aşamada:
-
-- k6 kurulumu
-- Virtual User (VU)
-- Duration
-- Request rate
-- Response time
-- Throughput
-- Failure rate
-- Check
-- Threshold
-- Load Testing
-- Stress Testing
-- Ramping load
-- `/work` endpoint'i üzerinden CPU yükü oluşturma
-
-konuları uygulamalı olarak öğrenilecektir.
-
-Bu aşama aynı zamanda daha sonra yapılacak:
+Bir sonraki teknik aşama:
 
 ```text
-Kubernetes
-        ↓
-Metrics Server
-        ↓
-Horizontal Pod Autoscaler
+Kubernetes Performance Comparison
 ```
 
-çalışmalarının temelini oluşturacaktır.
+olacaktır.
+
+Ana deney:
+
+```text
+1 Pod
+vs
+2 Pod
+vs
+HPA
+```
+
+Karşılaştırılacak metric'ler:
+
+- Throughput
+- Average Latency
+- Median Latency
+- P95 Latency
+- Failure Rate
+- CPU Usage
+- Replica Count
+
+Amaç şu soruya cevap vermektir:
+
+> Aynı CPU-bound workload altında Pod sayısının artırılması Service A'nın kapasitesini ve response sürelerini nasıl etkiler?
+
+Sonraki deney genel olarak:
+
+```text
+Single Pod Baseline
+↓
+Fixed Multiple Replicas
+↓
+Dynamic HPA
+↓
+Performance Comparison
+```
+
+şeklinde ilerleyecektir.
 
 ---
-## Benchmark Results
-
-| VU | Req/s |    Avg |     P95 |
-| -: | ----: | -----: | ------: |
-|  1 |  9.57 | 104 ms |  106 ms |
-|  2 |  9.89 | 200 ms |  204 ms |
-|  3 |  9.86 | 300 ms |  415 ms |
-|  4 |  9.86 | 399 ms |  615 ms |
-|  5 |  9.84 | 497 ms |  812 ms |
-| 10 |  9.85 | 967 ms |  1.82 s |
-| 20 |  9.73 | 1.88 s |  9.74 s |
-| 40 |  9.82 | 3.48 s | 13.21 s |
-| 80 |  9.84 | 6.30 s | 17.12 s |
-
-## Capacity Analysis
-
-Gerçekleştirilen testler sonucunda aşağıdaki gözlemler elde edilmiştir.
-
-- Service A yaklaşık **10 request/s** işleyebilmektedir.
-- Virtual User sayısı artırıldığında throughput önemli ölçüde artmamıştır.
-- Throughput yaklaşık aynı seviyede kalırken latency sürekli yükselmiştir.
-- Bunun nedeni Node.js'in CPU-bound workload'u tek Event Loop üzerinde işlemesidir.
-- Ek concurrency yeni throughput üretmek yerine request'lerin daha uzun süre beklemesine neden olmuştur.
-- Bu davranış sistemin saturation (doygunluk) noktasına ulaştığını göstermektedir.
 
 # Repository
 
 GitHub:
 
+```text
 https://github.com/thebilici/nodejs-cloud-native-learning
+```

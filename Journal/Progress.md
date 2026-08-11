@@ -430,35 +430,462 @@ Readiness Probe ✅
 Liveness Probe ✅
 ```
 
-## Sıradaki aşama
+#### Metrics Server
 
-### Metrics Server
+* Kubernetes Metrics Server kuruldu.
+* Metrics Server'ın Kubernetes içerisindeki resource metric altyapısını sağladığı öğrenildi.
+* Metrics Server'ın Node'lardaki Kubelet'lerden CPU ve memory metric'lerini topladığı öğrenildi.
+* Metrics API'nin Kubernetes tarafından resource metric'lerine erişmek için kullanıldığı öğrenildi.
+* `kubectl top pods` komutu ile Pod CPU ve memory kullanımları görüntülendi.
+* `kubectl top nodes` komutu ile Node CPU ve memory kullanımları görüntülendi.
+* Kubernetes CPU ölçümünde kullanılan `m` yani millicore kavramı öğrenildi.
+* `1000m = 1 CPU Core` ilişkisi öğrenildi.
+* Service A Pod'larının normal durumdaki CPU kullanımları gözlemlendi.
+* `/work` endpoint'ine yük gönderildiğinde Service A CPU kullanımının yükseldiği gözlemlendi.
+* Service A Pod'larından birinin yük altında yaklaşık `402m` CPU kullandığı görüldü.
+* Metrics Server'ın HPA için gerekli CPU metric'lerini sağlayabildiği doğrulandı.
 
-Bir sonraki aşamada:
-
-* Kubernetes resource metrics mantığı öğrenilecek.
-* CPU ve memory metric'leri incelenecek.
-* `kubectl top nodes` kullanılacak.
-* `kubectl top pods` kullanılacak.
-* Service A `/work` endpoint'i üzerinden CPU yükü oluşturulacak.
-* Pod CPU kullanımının Kubernetes tarafından nasıl ölçüldüğü gözlemlenecek.
-* Horizontal Pod Autoscaler için gerekli metrics altyapısı hazırlanacak.
-
-Ardından:
+Metrics akışı:
 
 ```text
+Pod
+↓
+Node / Kubelet
+↓
 Metrics Server
+↓
+Metrics API
+↓
+kubectl top / HPA
+```
+
+#### Kubernetes Resource Requests ve Limits
+
+* Kubernetes resource management mantığı incelendi.
+* Resource Request, Resource Usage ve Resource Limit kavramları birbirinden ayrıldı.
+* Request değerinin container'ın gerçek kullanım miktarı olmadığı öğrenildi.
+* Request değerlerinin Kubernetes Scheduler tarafından Pod yerleşiminde kullanıldığı öğrenildi.
+* Limit değerinin container'ın kullanabileceği resource için üst sınır belirlediği öğrenildi.
+* CPU ve memory limit davranışlarının farklı olabileceği öğrenildi.
+* Service A Deployment'a CPU ve memory resource değerleri eklendi.
+
+Service A için kullanılan resource configuration:
+
+```yaml
+resources:
+  requests:
+    cpu: "100m"
+    memory: "64Mi"
+  limits:
+    cpu: "500m"
+    memory: "256Mi"
+```
+
+Güncel resource yapısı:
+
+```text
+CPU Request    → 100m
+CPU Limit      → 500m
+
+Memory Request → 64Mi
+Memory Limit   → 256Mi
+```
+
+* CPU request değerinin HPA CPU utilization hesabında kullanıldığı öğrenildi.
+* CPU utilization değerinin `%100` üzerine çıkabileceği öğrenildi.
+* Örneğin `100m` CPU request tanımlı bir Pod'un `200m` CPU kullanmasının yaklaşık `%200` utilization anlamına gelebileceği öğrenildi.
+
+#### Horizontal Pod Autoscaler
+
+* Horizontal Scaling kavramı öğrenildi.
+* Horizontal Scaling ile Vertical Scaling arasındaki fark öğrenildi.
+* Horizontal Pod Autoscaler'ın Kubernetes workload'larını metric değerlerine göre otomatik scale edebildiği öğrenildi.
+* Service A için HPA oluşturuldu.
+* HPA'nın `Deployment/service-a` kaynağını yönetecek şekilde yapılandırılması sağlandı.
+* `autoscaling/v2` API kullanıldı.
+* Minimum replica sayısı `2` olarak belirlendi.
+* Maksimum replica sayısı `5` olarak belirlendi.
+* CPU target utilization değeri `%50` olarak belirlendi.
+* `kubectl get hpa` ile HPA durumu görüntülendi.
+* HPA'nın mevcut CPU utilization değerini Metrics Server üzerinden aldığı doğrulandı.
+
+Service A HPA configuration:
+
+```text
+Target       → Deployment/service-a
+Metric       → CPU
+Target CPU   → 50%
+Min Replicas → 2
+Max Replicas → 5
+```
+
+HPA çalışma akışı:
+
+```text
+Service A Pods
+↓
+CPU Usage
+↓
+Metrics Server
+↓
+HPA
+↓
+Target CPU ile karşılaştırma
+↓
+Deployment replica sayısı
+↓
+ReplicaSet
+↓
+Pods
+```
+
+* HPA'nın doğrudan Pod oluşturmadığı öğrenildi.
+* HPA'nın Deployment'ın desired replica sayısını değiştirdiği öğrenildi.
+* Deployment ve ReplicaSet'in gerekli Pod'ları oluşturduğu öğrenildi.
+
+#### k6 ile HPA Load Test
+
+* Daha önce oluşturulan `/work` stress testi Kubernetes ortamında tekrar kullanıldı.
+* Service A'ya local bilgisayardan ulaşmak için `kubectl port-forward` kullanıldı.
+* Port Forward'ın local geliştirme ve debugging amacıyla cluster içindeki Service'e geçici erişim sağladığı öğrenildi.
+
+Kullanılan bağlantı:
+
+```text
+k6
+↓
+localhost:3000
+↓
+kubectl port-forward
+↓
+service-a Service
+↓
+Service A Pods
+```
+
+* k6 stress testinde VU sayısı kademeli olarak artırıldı.
+* `/work` endpoint'i üzerinden CPU-bound workload oluşturuldu.
+* Test sırasında HPA ayrı terminalden takip edildi.
+* CPU utilization değerinin başlangıçta yaklaşık `%1` seviyesinde olduğu görüldü.
+* Yük arttığında CPU utilization değerinin `%67` seviyesine çıktığı gözlemlendi.
+* Daha yüksek yük altında CPU utilization değerinin `%245` seviyesine ulaştığı görüldü.
+* CPU target değerinin `%50` olması nedeniyle HPA'nın scale-up işlemi yaptığı gözlemlendi.
+* Service A replica sayısının yük altında arttığı görüldü.
+
+Gözlemlenen scale-up:
+
+```text
+2 Pod
+↓
+3 Pod
+↓
+5 Pod
+```
+
+* Yeni Pod'ların oluşturulması `kubectl get pods` ile takip edildi.
+* Yeni Pod'larda `Pending → Running → Ready` geçişleri gözlemlendi.
+* `Running` ile `Ready` durumlarının aynı şey olmadığı pekiştirildi.
+* Readiness Probe başarılı olduktan sonra Pod'un Service trafiğine dahil olduğu öğrenildi.
+* Maksimum replica sınırı `5` olduğu için Service A'nın 5 Pod seviyesinde sınırlandığı görüldü.
+
+#### HPA Scale Down
+
+* k6 stress testi tamamlandıktan sonra CPU kullanımı tekrar düştü.
+* CPU utilization değerinin yaklaşık `%3` seviyesine kadar indiği gözlemlendi.
+* HPA'nın Pod sayısını yük biter bitmez doğrudan azaltmadığı görüldü.
+* Scale-down stabilization davranışı öğrenildi.
+* Stabilization mekanizmasının gereksiz replica dalgalanmalarını azaltmaya yardımcı olduğu öğrenildi.
+* Bir süre sonra Service A replica sayısının minimum değer olan `2` seviyesine döndüğü gözlemlendi.
+
+Scale-down akışı:
+
+```text
+Load Test biter
+↓
+CPU Usage düşer
+↓
+Metrics Server yeni metric'leri toplar
+↓
+HPA düşük utilization görür
+↓
+Stabilization
+↓
+Replica sayısı azaltılır
+↓
+Minimum 2 Pod
+```
+
+#### HPA Conditions ve Events
+
+* `kubectl describe hpa service-a-hpa` ile HPA ayrıntıları incelendi.
+* `Metrics`, `Min replicas`, `Max replicas`, `Deployment pods`, `Conditions` ve `Events` bölümleri incelendi.
+* `AbleToScale` condition'ı öğrenildi.
+* `ScalingActive` condition'ı öğrenildi.
+* `ScalingLimited` condition'ı öğrenildi.
+* `ValidMetricFound` durumunun HPA'nın geçerli CPU metric'ine ulaşabildiğini gösterdiği öğrenildi.
+* `DesiredWithinRange` durumunun hesaplanan replica sayısının belirlenen sınırlar içerisinde olduğunu gösterdiği öğrenildi.
+* `SuccessfulRescale` event'leri incelendi.
+* CPU utilization target'ın üzerine çıktığında replica sayısının artırıldığı doğrulandı.
+* Tüm metric'ler target'ın altına düştüğünde replica sayısının azaltıldığı doğrulandı.
+
+Gözlemlenen event nedenleri:
+
+```text
+cpu resource utilization above target
+→ Scale Up
+
+All metrics below target
+→ Scale Down
+```
+
+#### Metrics Server, HPA ve k6 İlişkisi
+
+Bu aşamada daha önce ayrı ayrı öğrenilen load testing ve Kubernetes resource management konuları bir araya getirildi.
+
+Genel autoscaling akışı:
+
+```text
+k6
+↓
+HTTP Requests
+↓
+Service A /work
+↓
+CPU-bound Workload
+↓
+CPU Usage artışı
+↓
+Kubelet
+↓
+Metrics Server
+↓
+Metrics API
 ↓
 Horizontal Pod Autoscaler
 ↓
-k6 ile Kubernetes Load Test
+Deployment
 ↓
-Tek Pod vs Çok Pod performans karşılaştırması
+ReplicaSet
+↓
+Yeni Service A Pods
 ```
 
-aşamasına geçilecektir.
+* k6'nın yalnızca performans ölçmek için değil, autoscaling davranışını tetiklemek için de kullanılabileceği öğrenildi.
+* Metrics Server'ın scaling yapmadığı, yalnızca metric sağladığı öğrenildi.
+* HPA'nın metric'leri kullanarak scaling kararı verdiği öğrenildi.
+* Deployment'ın desired replica sayısının HPA tarafından değiştirilebildiği öğrenildi.
+* ReplicaSet'in yeni desired state'e göre Pod sayısını yönettiği öğrenildi.
 
 ---
+
+## Güncel Kubernetes Durumu
+
+```text
+Kubernetes Cluster ✅
+        ↓
+Deployment ✅
+        ↓
+ReplicaSet ✅
+        ↓
+Pod ✅
+        ↓
+ClusterIP Service ✅
+        ↓
+Kubernetes DNS / Service Discovery ✅
+        ↓
+Service A → Service B Communication ✅
+        ↓
+ConfigMap ✅
+        ↓
+Readiness Probe ✅
+        ↓
+Liveness Probe ✅
+        ↓
+Metrics Server ✅
+        ↓
+Resource Requests / Limits ✅
+        ↓
+Horizontal Pod Autoscaler ✅
+        ↓
+k6 ile HPA Load Test ✅
+        ↓
+Scale Up / Scale Down ✅
+```
+
+## Güncel Autoscaling Yapısı
+
+```text
+                    ┌──────────────────┐
+                    │        k6        │
+                    └────────┬─────────┘
+                             ↓
+                    localhost:3000
+                             ↓
+                      Port Forward
+                             ↓
+                  ┌────────────────────┐
+                  │ Service A Service  │
+                  └─────────┬──────────┘
+                            ↓
+                 ┌─────────────────────┐
+                 │   Service A Pods    │
+                 └─────────┬───────────┘
+                           ↓
+                       CPU Usage
+                           ↓
+                        Kubelet
+                           ↓
+                    Metrics Server
+                           ↓
+                      Metrics API
+                           ↓
+                           HPA
+                           ↓
+                 Service A Deployment
+                           ↓
+                       ReplicaSet
+                           ↓
+                    Service A Pods
+```
+
+## Güncel HPA Yapılandırması
+
+```text
+Workload:
+Deployment/service-a
+
+Metric:
+CPU
+
+CPU Request:
+100m
+
+CPU Target:
+50%
+
+Minimum Replica:
+2
+
+Maximum Replica:
+5
+```
+
+Gerçek test sırasında gözlemlenen davranış:
+
+```text
+Normal Load
+2 Pods
+↓
+CPU yükselir
+↓
+HPA target aşılır
+↓
+3 Pods
+↓
+Yük devam eder
+↓
+5 Pods
+↓
+Yük biter
+↓
+CPU düşer
+↓
+Scale-down stabilization
+↓
+2 Pods
+```
+
+---
+
+## Sıradaki Aşama
+
+### Kubernetes Performans Karşılaştırması
+
+Metrics Server ve Horizontal Pod Autoscaler altyapısı tamamlandı.
+
+Bir sonraki aşamada Service A'nın farklı replica yapılarındaki performansı karşılaştırılacak.
+
+Karşılaştırılacak senaryolar:
+
+```text
+Tek Pod
+vs
+Sabit Çoklu Pod
+vs
+HPA
+```
+
+Ölçülecek temel metric'ler:
+
+* Throughput
+* Average Latency
+* Median Latency
+* P95 Latency
+* Failure Rate
+* CPU Usage
+* Replica Count
+
+Amaç:
+
+```text
+CPU-bound Node.js workload
+↓
+Tek Pod kapasitesi
+↓
+Birden fazla Pod kapasitesi
+↓
+Horizontal Scaling
+↓
+HPA davranışı
+↓
+Performans farkı
+```
+
+ilişkisini ölçmek ve Kubernetes horizontal scaling'in Service A performansına etkisini sayısal olarak gözlemlemektir.
+
+---
+
+## Güncel Öğrenme Konumu
+
+```text
+Git ve GitHub ✅
+        ↓
+Node.js ve TypeScript ✅
+        ↓
+Express ve Katmanlı Mimari ✅
+        ↓
+Service A ✅
+        ↓
+Docker Temelleri ✅
+        ↓
+Docker Network ✅
+        ↓
+Service B ✅
+        ↓
+Servisler Arası İletişim ✅
+        ↓
+Docker Compose ✅
+        ↓
+k6 Load Testing ✅
+        ↓
+Kubernetes Temelleri ✅
+        ↓
+Deployment / ReplicaSet / Pod ✅
+        ↓
+Service / DNS / Service Discovery ✅
+        ↓
+ConfigMap ✅
+        ↓
+Readiness / Liveness Probe ✅
+        ↓
+Metrics Server ✅
+        ↓
+Resource Requests / Limits ✅
+        ↓
+Horizontal Pod Autoscaler ✅
+        ↓
+k6 + HPA Testi ✅
+        ↓
 
 ## Güncel Service A mimarisi
 

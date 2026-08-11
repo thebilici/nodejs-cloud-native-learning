@@ -918,3 +918,54 @@ Readiness başarısız
 Liveness sürekli başarısız
 → ?
 ```
+# Questions — Metrics Server, Resources ve HPA
+
+1. Kubelet'in Kubernetes Node üzerindeki temel görevi nedir?
+
+2. Metrics Server resource metric'lerini hangi component üzerinden toplar?
+
+3. Metrics API ne işe yarar?
+
+4. `Kubelet → Metrics Server → Metrics API` zincirini kendi cümlelerinle açıkla.
+
+5. `kubectl top pods` komutu bize hangi bilgileri gösterir?
+
+6. `kubectl top nodes` ile `kubectl top pods` arasındaki fark nedir?
+
+7. Kubernetes CPU değerlerinde kullanılan `m` ne anlama gelir?
+
+8. `500m` CPU yaklaşık kaç CPU core eder?
+
+9. Resource Request nedir ve Kubernetes Scheduler bunu neden kullanır?
+
+10. Resource Usage ile Resource Request arasındaki fark nedir?
+
+11. Resource Limit nedir?
+
+12. CPU limit aşılmaya çalışıldığında Kubernetes tarafında ne olabilir?
+
+13. Memory limit aşılırsa container açısından ne olabilir?
+
+14. Service A için tanımladığımız CPU request, CPU limit, memory request ve memory limit değerleri nelerdir?
+
+15. CPU Request `100m`, gerçek CPU Usage `70m` ise yaklaşık CPU utilization yüzde kaçtır?
+
+16. CPU utilization değeri neden `%100` üzerine çıkabilir?
+
+17. Horizontal Scaling ile Vertical Scaling arasındaki temel fark nedir?
+
+18. HPA'nın açılımı nedir ve temel görevi nedir?
+
+19. HPA neden doğrudan Pod oluşturmaz? HPA'dan Pod'a kadar component zincirini yaz.
+
+20. HPA manifestindeki `scaleTargetRef` ne işe yarar?
+
+21. `minReplicas: 2` ve `maxReplicas: 5` ayarları ne anlama gelir?
+
+22. `averageUtilization: 50` ne ifade eder?
+
+23. `kubectl get hpa` çıktısındaki `cpu: 67%/50%` ifadesini nasıl yorumlarsın?
+
+24. k6 stress testinde CPU kullanımı yükseldiğinde Service A replica sayısının `2 → 3 → 5` şeklinde değişmesinin sebebi nedir?
+
+25. Yük bittikten sonra HPA neden replica sayısını hemen `5 → 2` düşürmek yerine bir süre bekleyebilir?
