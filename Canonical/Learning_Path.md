@@ -185,40 +185,7 @@ Replica Sayısı Artar
 Performans Değişimi Ölçülür
 ```
 
-## Sonraki Aşama
-
-### Aşama 13 — Tek Pod vs Çok Pod Karşılaştırması
-
-Amaç:
-
-Aynı workload altında farklı replica sayılarının performansa etkisini karşılaştırmak.
-
-Karşılaştırılacak senaryolar:
-
-```text
-1 Pod
-vs
-2 Pod
-vs
-HPA ile Dinamik Pod Sayısı
-```
-
-İncelenecek metrikler:
-
-- Throughput
-- Average Latency
-- P95 Latency
-- Request Failure Rate
-- CPU Usage
-- Replica Sayısı
-
-Amaç şu soruya cevap vermek:
-
-> Pod sayısı arttığında uygulamanın kapasitesi ve response süreleri nasıl değişiyor?
-
-## Final Aşama
-
-### Aşama 14 — Proje Analizi ve Genel Tekrar
+### Aşama 13 — Proje Analizi ve Genel Tekrar
 
 Bu aşamada proje baştan sona tekrar edilecek.
 
