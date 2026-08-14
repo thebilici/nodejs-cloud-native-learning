@@ -16,14 +16,14 @@ Bu dosya, öğrendiğim kavramları kısa soru-cevap kartlarıyla tekrar etmek i
 
 | Konu | Kart aralığı | Durum |
 |---|---:|---|
-| Git ve GitHub | 1-50 | Devam ediyor |
-| Node.js ve Express | 51-100 | Devam ediyor |
-| Docker | 101-150 | Henüz başlanmadı |
-| Docker Compose | 151-180 | Henüz başlanmadı |
-| Kubernetes | 181-250 | Henüz başlanmadı |
-| Metrics Server ve HPA | 251-300 | Henüz başlanmadı |
-| k6 | 301-350 | Henüz başlanmadı |
-| Cloud Native | 351-400 | Henüz başlanmadı |
+| Git ve GitHub |  |
+| Node.js ve Express | |
+| Docker ||
+| Docker Compose | |
+| Kubernetes | |
+| Metrics Server ve HPA |  |
+| k6 |  |  
+| Cloud Native |  |
 
 ---
 
