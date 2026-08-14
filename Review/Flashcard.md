@@ -2095,27 +2095,6 @@ Bu performans analizinin Kubernetes tarafındaki temel amacı nedir?
 Cevap:
 Tek pod'un kapasitesini ölçerek HPA ve pod ölçeklendirmesinin throughput ile latency üzerindeki etkisini karşılaştırabilmektir.
 
-# Tekrar Edilecek Kartlar
-
-Yanlış veya eksik cevaplanan kartlar konu başlıklarına göre bu bölüme eklenecektir.
-
-## Git ve GitHub
-
-- Kart 17 — `git commit` ile `git push` arasındaki fark
-
-
-
-## Metrics Server ve HPA
-
-Henüz kart bulunmuyor.
-
-## k6
-
-Henüz kart bulunmuyor.
-
-## Cloud Native
-
-Henüz kart bulunmuyor.
 
 # Kubernetes Flashcards — 25 Kart
 
